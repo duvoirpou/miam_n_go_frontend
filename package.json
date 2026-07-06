@@ -1,0 +1,33 @@
+{
+  "name": "swigo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "sass": "sass --watch src/assets/scss/main.scss src/assets/css/style.css --source-map"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^3.11.0",
+    "@lottiefiles/vue-lottie-player": "^1.1.0",
+    "axios": "^1.18.1",
+    "bootstrap": "^5.3.2",
+    "bootstrap-vue": "^2.23.1",
+    "lightgallery": "^2.7.2",
+    "pinia": "^3.0.4",
+    "sass": "^1.67.0",
+    "swiper": "^10.2.0",
+    "vue": "^3.3.4",
+    "vue-range-slider": "^0.6.0",
+    "vue-router": "^4.2.4",
+    "vue3-lottie": "^3.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "vite": "^4.4.6"
+  }
+}
