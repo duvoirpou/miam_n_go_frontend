@@ -7,7 +7,7 @@ import { useAuthStore } from "@/stores/auth";
 const authStore = useAuthStore();
 
 const menus = ref([
-  { menu: "Accueil", link: "/home-2" },
+  { menu: "Accueil", link: "/" },
   { menu: "Partenaires", link: "/partenaires" },
   { menu: "Panier", link: "/panier" },
   { menu: "Contact", link: "/contact-us" },
@@ -40,7 +40,7 @@ function mobileActiveMenu(ind) {
 
 <template>
   <div class="logo-header">
-    <RouterLink to="/home-2" class="anim-logo"
+    <RouterLink to="/" class="anim-logo"
       ><img src="../assets/images/logo.png" alt="/"
     /></RouterLink>
   </div>

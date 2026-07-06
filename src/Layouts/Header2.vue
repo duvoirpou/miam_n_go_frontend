@@ -130,7 +130,7 @@ window.onscroll = () => {
   <div :class="`contact-sidebar ${addActive === true ? 'active' : ''}`">
     <div class="contact-box1">
       <div class="logo-contact logo-header">
-        <RouterLink to="/home-2" class="anim-logo"
+        <RouterLink to="/" class="anim-logo"
           ><img src="../assets/images/logo.png" alt="/"
         /></RouterLink>
       </div>

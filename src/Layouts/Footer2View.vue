@@ -16,7 +16,7 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                   data-wow-delay="0.4s"
                 >
                   <div class="footer-logo">
-                    <RouterLink to="/home-2" class="anim-logo-white">
+                    <RouterLink to="/" class="anim-logo-white">
                       <img src="../assets/images/logo2.png" alt="/" />
                     </RouterLink>
                   </div>
@@ -73,7 +73,7 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                 <h5 class="footer-title">Liens</h5>
                 <ul>
                   <li>
-                    <RouterLink to="/home-2"><span>Accueil</span></RouterLink>
+                    <RouterLink to="/"><span>Accueil</span></RouterLink>
                   </li>
                   <li>
                     <RouterLink to="/partenaires"

@@ -144,7 +144,7 @@ let canvas = document.createElement("canvas");
           <h1 class="error-head">404</h1>
           <h3 class="error-para">Opps! Page not Found</h3>
           <p>Sorry. The page you are looking for is not found</p>
-          <RouterLink to="/home-2" class="btn btn-md btn-primary btn-hover-1"
+          <RouterLink to="/" class="btn btn-md btn-primary btn-hover-1"
             ><span>Back to Home</span></RouterLink
           >
         </div>

@@ -11,7 +11,7 @@ const authStore = useAuthStore();
 
 async function onLogout() {
   await authStore.logout();
-  router.push("/home-2");
+  router.push("/");
 }
 </script>
 
