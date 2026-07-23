@@ -2,6 +2,9 @@ import axios from "axios";
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    Accept: "application/json",
+  },
 });
 
 http.interceptors.request.use((config) => {
@@ -11,5 +14,20 @@ http.interceptors.request.use((config) => {
   }
   return config;
 });
+
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_customer");
+    }
+    return Promise.reject(error);
+  }
+);
+
+export function unwrap(res) {
+  return res.data?.data ?? res.data;
+}
 
 export default http;

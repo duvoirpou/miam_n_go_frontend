@@ -1,13 +1,13 @@
-import http from "./http";
+import http, { unwrap } from "./http";
 
 export function getProducts({ partnerId, categoryId } = {}) {
   return http
     .get("/products", {
       params: { partner_id: partnerId, category_id: categoryId },
     })
-    .then((res) => res.data);
+    .then(unwrap);
 }
 
 export function getProduct(id) {
-  return http.get(`/products/${id}`).then((res) => res.data);
+  return http.get(`/products/${id}`).then(unwrap);
 }

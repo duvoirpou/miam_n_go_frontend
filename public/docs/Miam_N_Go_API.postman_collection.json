@@ -1,0 +1,677 @@
+{
+  "info": {
+    "_postman_id": "b6f2a1a0-4e2a-4b7a-9c2d-miamngo-api-v13",
+    "name": "API Miam N Go - Production v1.3",
+    "description": "# API Miam N Go\n\nAPI REST Laravel 12 + Sanctum pour la plateforme de commande et livraison de repas Miam N Go.\n\n**Base URL (production)** : `https://api-miamngo.digiapp.tech/api`\n\n**Sécurité** : Laravel Sanctum avec Bearer Token. Les routes protégées nécessitent le header `Authorization: Bearer {{token}}`.\n\n**Rôles** :\n- `ADMIN` : accès total à toutes les ressources.\n- `PARTNER` : gère uniquement les produits/commandes/paiements/livraisons liés à son ou ses restaurant(s) (table `partner_users`).\n- `CUSTOMER` : gère uniquement son propre profil, ses commandes, ses paiements et ses livraisons.\n\n**Référentiel des statuts métier (v1.3)** :\n- `status_order` : PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED, REJECTED\n- `status_payment` : PENDING, PROCESSING, PAID, FAILED, REFUNDED, CANCELLED\n- `status_delivery` : PENDING, ASSIGNED, PICKED_UP, ON_THE_WAY, DELIVERED, FAILED, CANCELLED\n\nCycle recommandé commande : `PENDING -> CONFIRMED -> PREPARING -> READY -> COMPLETED`\nCycle recommandé livraison : `PENDING -> ASSIGNED -> PICKED_UP -> ON_THE_WAY -> DELIVERED`\n\n**Repository** : https://github.com/BabyBossKfy/miam_n_go\n**Framework** : Laravel 12 + Sanctum\n**Auteur documentation** : Franck Kianguebeni\n**Version documentation source** : v1.3 consolidée (16 juillet 2026)\n\nCollection générée à partir de `API_Miam_N_Go_Production_Auth_Roles_v1_3_Consolide.pdf`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Capture automatiquement le token retourne par /auth/login ou /auth/register",
+          "if (pm.response.code === 200 || pm.response.code === 201) {",
+          "    try {",
+          "        const body = pm.response.json();",
+          "        const token = body.token || (body.data && body.data.token);",
+          "        if (token) {",
+          "            pm.collectionVariables.set('token', token);",
+          "        }",
+          "    } catch (e) { /* reponse non JSON, on ignore */ }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "https://api-miamngo.digiapp.tech/api", "type": "string" },
+    { "key": "token", "value": "", "type": "string", "description": "Token Bearer courant (auto-rempli après login/register)" },
+    { "key": "token_admin", "value": "", "type": "string", "description": "Token Bearer d'un compte ADMIN" },
+    { "key": "token_partner", "value": "", "type": "string", "description": "Token Bearer d'un compte PARTNER" },
+    { "key": "token_customer", "value": "", "type": "string", "description": "Token Bearer d'un compte CUSTOMER" },
+    { "key": "category_id", "value": "1", "type": "string" },
+    { "key": "partner_id", "value": "1", "type": "string" },
+    { "key": "product_id", "value": "1", "type": "string" },
+    { "key": "customer_id", "value": "1", "type": "string" },
+    { "key": "order_id", "value": "1", "type": "string" },
+    { "key": "payment_id", "value": "1", "type": "string" },
+    { "key": "delivery_id", "value": "1", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "01. Authentification",
+      "description": "Inscription, connexion, profil utilisateur connecté et déconnexion. Ces routes gèrent la génération et l'usage du token Sanctum.",
+      "item": [
+        {
+          "name": "Inscription client (register)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name_customers\": \"Franck\",\n  \"last_name_customers\": \"Kianguebeni\",\n  \"phone_customers\": \"066000001\",\n  \"mail_customers\": \"franck2@test.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Route publique. Crée un compte CUSTOMER et retourne un token Sanctum utilisable immédiatement."
+          },
+          "response": []
+        },
+        {
+          "name": "Connexion (login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mail_customers\": \"partner@godfavor.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Route publique. Retourne le token, le type Bearer, l'utilisateur et son rôle (ADMIN, PARTNER ou CUSTOMER). Le script de test de cette requête enregistre automatiquement le token dans la variable de collection `token`."
+          },
+          "response": []
+        },
+        {
+          "name": "Utilisateur connecté (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Route protégée (tous rôles). Retourne les informations de l'utilisateur authentifié par le token Bearer courant."
+          },
+          "response": []
+        },
+        {
+          "name": "Déconnexion (logout)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Route protégée (tous rôles). Révoque le token Sanctum courant."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02. Santé",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] },
+            "description": "Route publique. Vérifie que l'API est disponible."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03. Categories",
+      "description": "PUBLIC/CUSTOMER/PARTNER : lecture seule. ADMIN : gestion complète (CRUD, non détaillé explicitement dans la doc source au-delà des routes publiques listées).",
+      "item": [
+        {
+          "name": "Lister les catégories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/categories", "host": ["{{base_url}}"], "path": ["categories"] },
+            "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'une catégorie",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "{{category_id}}"]
+            },
+            "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04. Partners",
+      "description": "PUBLIC/CUSTOMER/PARTNER : lecture seule. ADMIN : gestion complète.",
+      "item": [
+        {
+          "name": "Lister les partenaires",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/partners", "host": ["{{base_url}}"], "path": ["partners"] },
+            "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un partenaire",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/partners/{{partner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["partners", "{{partner_id}}"]
+            },
+            "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05. Products",
+      "description": "Catalogue produits. Lecture publique. Écriture réservée à PARTNER (ses propres produits uniquement) et ADMIN (tout).",
+      "item": [
+        {
+          "name": "Lister les produits",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] },
+            "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un produit",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{product_id}}"]
+            },
+            "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Mes produits (PARTNER)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/my-products", "host": ["{{base_url}}"], "path": ["my-products"] },
+            "description": "Route protégée. Nécessite un token PARTNER. Retourne uniquement les produits liés au(x) restaurant(s) du partenaire connecté (via `partner_users`)."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un produit - cas autorisé (PARTNER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label_products\": \"Burger God Favor\",\n  \"price\": 7000,\n  \"id_category\": 2,\n  \"id_partners\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] },
+            "description": "Route protégée. Un PARTNER ne peut créer un produit que pour son propre `id_partners`. Réponse attendue : `201 Created`."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un produit - cas interdit (autre partenaire)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label_products\": \"Produit interdit\",\n  \"price\": 5000,\n  \"id_category\": 1,\n  \"id_partners\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] },
+            "description": "Exemple de rejet de sécurité. Un token PARTNER tentant de créer un produit pour un `id_partners` qui ne lui appartient pas reçoit :\n\n```\n403 Forbidden\n{\n  \"success\": false,\n  \"message\": \"Accès refusé. Vous ne pouvez créer un produit que pour votre propre partenaire.\"\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un produit",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label_products\": \"Burger God Favor - Maxi\",\n  \"price\": 7500\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{product_id}}"]
+            },
+            "description": "Route protégée. PARTNER : uniquement ses propres produits. ADMIN : tous les produits."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un produit",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{product_id}}"]
+            },
+            "description": "Route protégée. PARTNER : uniquement ses propres produits. ADMIN : tous les produits."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06. Customers",
+      "description": "ADMIN : tous les clients. PARTNER : uniquement les clients ayant commandé ses produits. CUSTOMER : uniquement son propre profil.",
+      "item": [
+        {
+          "name": "Lister les clients",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/customers", "host": ["{{base_url}}"], "path": ["customers"] },
+            "description": "Route protégée. Le résultat dépend du rôle : ADMIN voit tout, PARTNER voit les clients ayant commandé ses produits, CUSTOMER voit son propre profil."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un client",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            },
+            "description": "Route protégée. Accès restreint selon le rôle (voir synthèse des droits)."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name_customers\": \"Franck\",\n  \"last_name_customers\": \"Kianguebeni\",\n  \"phone_customers\": \"066000002\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            },
+            "description": "Route protégée. CUSTOMER : uniquement son propre profil. ADMIN : tous les profils."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un client",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            },
+            "description": "Route protégée. Réservé généralement à ADMIN."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07. Orders",
+      "description": "ADMIN : toutes les commandes. PARTNER : commandes contenant au moins un de ses produits. CUSTOMER : ses propres commandes, créées avec son token (id_customers déduit automatiquement).",
+      "item": [
+        {
+          "name": "Lister les commandes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/orders", "host": ["{{base_url}}"], "path": ["orders"] },
+            "description": "Route protégée. Portée selon rôle : ADMIN = toutes, PARTNER = commandes contenant ses produits, CUSTOMER = ses commandes."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer une commande (CUSTOMER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"products\": [\n    {\n      \"id_products\": 1,\n      \"quantity\": 2\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/orders", "host": ["{{base_url}}"], "path": ["orders"] },
+            "description": "Route protégée, réservée au rôle CUSTOMER. Le client est identifié automatiquement via le token : NE PAS envoyer `id_customers`.\n\nStatut initial recommandé après création : `status_order = PENDING`, `status_payment = PENDING`, `status_delivery = PENDING`."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'une commande",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Route protégée. Visibilité selon rôle (voir synthèse des droits)."
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre à jour le statut d'une commande",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status_order\": \"CONFIRMED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Route protégée. ADMIN modifie les statuts globaux, PARTNER met à jour certains statuts opérationnels sur les commandes contenant ses produits.\n\n**Valeurs autorisées pour `status_order`** : PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED, REJECTED.\n\nWorkflow recommandé : `PENDING -> CONFIRMED -> PREPARING -> READY -> COMPLETED`.\nCas alternatifs : `PENDING -> CANCELLED`, `PENDING -> REJECTED`."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une commande",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Route protégée. Réservé généralement à ADMIN."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08. Payments",
+      "description": "ADMIN : tous les paiements. CUSTOMER : peut payer uniquement ses propres commandes. PARTNER : lecture seule sur les paiements liés à ses produits (ne peut pas créer de paiement -> 403).",
+      "item": [
+        {
+          "name": "Lister les paiements",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/payments", "host": ["{{base_url}}"], "path": ["payments"] },
+            "description": "Route protégée. Portée selon rôle : ADMIN = tous, CUSTOMER = paiements de ses commandes, PARTNER = paiements liés à ses produits."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un paiement - Mobile Money (CUSTOMER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_orders\": 1,\n  \"type\": \"MOBILE_MONEY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"TXN-CUST-001\",\n  \"token\": \"TOKEN-CUST-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/payments", "host": ["{{base_url}}"], "path": ["payments"] },
+            "description": "Route protégée, réservée à CUSTOMER (paiement de sa propre commande) ou ADMIN. `phone_payment` trace le numéro utilisé pour le paiement Mobile Money."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un paiement - Cash on delivery (CUSTOMER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_orders\": 1,\n  \"type\": \"CASH_ON_DELIVERY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"CASH-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/payments", "host": ["{{base_url}}"], "path": ["payments"] },
+            "description": "Paiement à la livraison. À la création de la commande : `status_payment = PENDING`. Après encaissement effectif : `status_payment = PAID`."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un paiement - cas interdit (PARTNER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_orders\": 1,\n  \"type\": \"MOBILE_MONEY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"TXN-PARTNER-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/payments", "host": ["{{base_url}}"], "path": ["payments"] },
+            "description": "Test validé côté doc source : un token PARTNER tentant de créer un paiement reçoit :\n\n```\n403 Forbidden\n{\n  \"success\": false,\n  \"message\": \"Accès refusé. Un partenaire ne peut pas créer un paiement.\"\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un paiement",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/payments/{{payment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "{{payment_id}}"]
+            },
+            "description": "Route protégée. Visibilité selon rôle (voir synthèse des droits)."
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre à jour le statut d'un paiement",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status_transaction\": \"SUCCESS\",\n  \"status_payment\": \"PAID\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/{{payment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "{{payment_id}}"]
+            },
+            "description": "**Valeurs autorisées pour `status_payment`** : PENDING, PROCESSING, PAID, FAILED, REFUNDED, CANCELLED.\n\nParcours avant livraison : `PENDING -> PROCESSING -> PAID` ou `PENDING -> PROCESSING -> FAILED`."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un paiement",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/payments/{{payment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "{{payment_id}}"]
+            },
+            "description": "Route protégée. Réservé généralement à ADMIN."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "09. Deliveries",
+      "description": "ADMIN : toutes les livraisons (CRUD complet). PARTNER : livraisons liées à ses produits, peut mettre à jour le statut si concerné. CUSTOMER : lecture seule de ses propres livraisons.",
+      "item": [
+        {
+          "name": "Lister les livraisons",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/deliveries", "host": ["{{base_url}}"], "path": ["deliveries"] },
+            "description": "Route protégée. Portée selon rôle : ADMIN = toutes, PARTNER = livraisons liées à ses produits, CUSTOMER = ses livraisons."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer une livraison (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_orders\": 1,\n  \"area_delivery\": \"Centre-ville Pointe-Noire\",\n  \"status\": \"PENDING\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/deliveries", "host": ["{{base_url}}"], "path": ["deliveries"] },
+            "description": "Route protégée, typiquement réservée à ADMIN.\n\n**Valeurs autorisées pour `status_delivery`** : PENDING, ASSIGNED, PICKED_UP, ON_THE_WAY, DELIVERED, FAILED, CANCELLED."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'une livraison",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/deliveries/{{delivery_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries", "{{delivery_id}}"]
+            },
+            "description": "Route protégée. Visibilité selon rôle (voir synthèse des droits)."
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre à jour le statut d'une livraison",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ASSIGNED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/deliveries/{{delivery_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries", "{{delivery_id}}"]
+            },
+            "description": "ADMIN : peut modifier librement. PARTNER : peut mettre à jour le statut si la livraison concerne ses produits. CUSTOMER : ne peut pas modifier le statut.\n\nWorkflow recommandé : `PENDING -> ASSIGNED -> PICKED_UP -> ON_THE_WAY -> DELIVERED`.\nCas alternatifs : `PENDING -> FAILED`, `PENDING -> CANCELLED`."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une livraison",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/deliveries/{{delivery_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries", "{{delivery_id}}"]
+            },
+            "description": "Route protégée, réservée à ADMIN."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

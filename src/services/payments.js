@@ -1,5 +1,5 @@
-import http from "./http";
+import http, { unwrap } from "./http";
 
 export function createPayment(payload) {
-  return http.post("/payments", payload).then((res) => res.data);
+  return http.post("/payments", payload).then(unwrap);
 }

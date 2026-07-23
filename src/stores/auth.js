@@ -37,10 +37,10 @@ export const useAuthStore = defineStore("auth", {
       }
     },
     async fetchMe() {
-      const customer = await authService.fetchMe();
-      this.customer = customer;
-      localStorage.setItem("auth_customer", JSON.stringify(customer));
-      return customer;
+      const data = await authService.fetchMe();
+      this.customer = data.customer;
+      localStorage.setItem("auth_customer", JSON.stringify(data.customer));
+      return data.customer;
     },
   },
 });

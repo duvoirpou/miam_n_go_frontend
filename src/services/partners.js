@@ -1,9 +1,9 @@
-import http from "./http";
+import http, { unwrap } from "./http";
 
 export function getPartners() {
-  return http.get("/partners").then((res) => res.data);
+  return http.get("/partners").then(unwrap);
 }
 
 export function getPartner(id) {
-  return http.get(`/partners/${id}`).then((res) => res.data);
+  return http.get(`/partners/${id}`).then(unwrap);
 }

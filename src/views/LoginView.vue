@@ -20,10 +20,14 @@ async function submitLogin() {
   submitting.value = true;
   error.value = null;
   try {
-    await authStore.login({ mail: mail.value, password: password.value });
+    await authStore.login({
+      mail_customers: mail.value,
+      password: password.value,
+    });
     router.push(route.query.redirect || "/mon-compte");
   } catch (err) {
-    error.value = "Identifiants incorrects.";
+    error.value =
+      err.response?.data?.message || "Identifiants incorrects.";
   } finally {
     submitting.value = false;
   }

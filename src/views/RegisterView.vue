@@ -15,10 +15,15 @@ const lastName = ref("");
 const phone = ref("");
 const mail = ref("");
 const password = ref("");
+const passwordConfirmation = ref("");
 const submitting = ref(false);
 const error = ref(null);
 
 async function submitRegister() {
+  if (password.value !== passwordConfirmation.value) {
+    error.value = "Les mots de passe ne correspondent pas.";
+    return;
+  }
   submitting.value = true;
   error.value = null;
   try {
@@ -28,10 +33,13 @@ async function submitRegister() {
       phone_customers: phone.value,
       mail_customers: mail.value,
       password: password.value,
+      password_confirmation: passwordConfirmation.value,
     });
     router.push("/mon-compte");
   } catch (err) {
-    error.value = "Impossible de créer le compte. Vérifiez vos informations.";
+    error.value =
+      err.response?.data?.message ||
+      "Impossible de créer le compte. Vérifiez vos informations.";
   } finally {
     submitting.value = false;
   }
@@ -69,6 +77,15 @@ async function submitRegister() {
                 <label>Mot de passe</label>
                 <input
                   v-model="password"
+                  type="password"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group m-b20">
+                <label>Confirmation du mot de passe</label>
+                <input
+                  v-model="passwordConfirmation"
                   type="password"
                   class="form-control"
                   required

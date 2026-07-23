@@ -13,7 +13,8 @@ const router = useRouter();
 const cartStore = useCartStore();
 
 const areaDelivery = ref("");
-const paymentType = ref("cash");
+const paymentType = ref("CASH_ON_DELIVERY");
+const phonePayment = ref("");
 const submitting = ref(false);
 const error = ref(null);
 
@@ -22,27 +23,32 @@ async function submitOrder() {
     error.value = "Merci de renseigner votre adresse de livraison.";
     return;
   }
+  if (!phonePayment.value) {
+    error.value = "Merci de renseigner le numéro utilisé pour le paiement.";
+    return;
+  }
   submitting.value = true;
   error.value = null;
   try {
     const order = await createOrder({
-      partner_id: cartStore.partnerId,
-      price: cartStore.totalPrice,
-      area_delivery: areaDelivery.value,
-      order_details: cartStore.items.map((item) => ({
-        product_id: item.product_id,
-        unit_price: item.unit_price,
+      products: cartStore.items.map((item) => ({
+        id_products: item.product_id,
         quantity: item.quantity,
       })),
     });
     await createPayment({
-      order_id: order.id_orders,
+      id_orders: order.id_orders,
       type: paymentType.value,
+      phone_payment: phonePayment.value,
+      transaction: `WEB-${order.id_orders}-${Date.now()}`,
+      response: "OK",
+      status_transaction: "SUCCESS",
     });
     cartStore.clear();
     router.push(`/commande/confirmation/${order.id_orders}`);
   } catch (err) {
     error.value =
+      err.response?.data?.message ||
       "Impossible de valider la commande pour le moment. Merci de réessayer.";
   } finally {
     submitting.value = false;
@@ -76,10 +82,20 @@ async function submitOrder() {
                 <div class="form-group m-b20">
                   <label>Mode de paiement</label>
                   <select v-model="paymentType" class="form-control">
-                    <option value="cash">Paiement à la livraison</option>
-                    <option value="card">Carte bancaire</option>
-                    <option value="mobile_money">Mobile Money</option>
+                    <option value="CASH_ON_DELIVERY">
+                      Paiement à la livraison
+                    </option>
+                    <option value="MOBILE_MONEY">Mobile Money</option>
                   </select>
+                </div>
+                <div class="form-group m-b20">
+                  <label>Numéro de téléphone pour le paiement</label>
+                  <input
+                    v-model="phonePayment"
+                    type="tel"
+                    class="form-control"
+                    required
+                  />
                 </div>
                 <p v-if="error" class="text-danger">{{ error }}</p>
               </div>
