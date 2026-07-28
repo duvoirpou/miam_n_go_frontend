@@ -54,6 +54,12 @@
       "description": "Token Bearer d'un compte ADMIN"
     },
     {
+      "key": "admin_setup_key",
+      "value": "",
+      "type": "string",
+      "description": "Valeur de ADMIN_SETUP_KEY côté serveur, requise pour /auth/register-admin"
+    },
+    {
       "key": "token_partner",
       "value": "",
       "type": "string",
@@ -140,6 +146,43 @@
               ]
             },
             "description": "Route publique. Crée un compte CUSTOMER et retourne un token Sanctum utilisable immédiatement."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un administrateur (register-admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Miam N Go\",\n  \"email\": \"admin@miamngo.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"setup_key\": \"{{admin_setup_key}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register-admin",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register-admin"
+              ]
+            },
+            "description": "Route publique protégée par une clé secrète (`setup_key`), comparée à la variable serveur `ADMIN_SETUP_KEY`. Crée directement un compte avec `role: ADMIN` (pas de profil `customer` associé). Si `ADMIN_SETUP_KEY` est vide côté serveur, la route répond `403 Création d’administrateur désactivée sur cet environnement.` quel que soit le contenu envoyé. Une mauvaise clé répond `403 Clé de création invalide.`. Renseigne la variable de collection `admin_setup_key` avec la vraie clé avant utilisation."
           },
           "response": []
         },
