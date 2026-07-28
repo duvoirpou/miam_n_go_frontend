@@ -7,3 +7,15 @@ export function getPartners() {
 export function getPartner(id) {
   return http.get(`/partners/${id}`).then(unwrap);
 }
+
+export function createPartner(payload) {
+  return http.post("/partners", payload).then(unwrap);
+}
+
+export function updatePartner(id, payload) {
+  return http.put(`/partners/${id}`, payload).then(unwrap);
+}
+
+export function deletePartner(id) {
+  return http.delete(`/partners/${id}`).then((res) => res.data);
+}

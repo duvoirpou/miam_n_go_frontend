@@ -16,3 +16,15 @@ export async function getDeliveryByOrder(orderId) {
     ) || null
   );
 }
+
+export function createDelivery(payload) {
+  return http.post("/deliveries", payload).then(unwrap);
+}
+
+export function updateDelivery(id, payload) {
+  return http.put(`/deliveries/${id}`, payload).then(unwrap);
+}
+
+export function deleteDelivery(id) {
+  return http.delete(`/deliveries/${id}`).then((res) => res.data);
+}

@@ -69,6 +69,48 @@ const router = createRouter({
       component: () => import("../views/ContactUsView.vue"),
     },
     {
+      path: "/admin",
+      name: "admin_dashboard",
+      component: () => import("../views/admin/DashboardView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: "/admin/produits",
+      name: "admin_products",
+      component: () => import("../views/admin/ProductsView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: "/admin/categories",
+      name: "admin_categories",
+      component: () => import("../views/admin/CategoriesView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: "/admin/partenaires",
+      name: "admin_partners",
+      component: () => import("../views/admin/PartnersView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: "/admin/commandes",
+      name: "admin_orders",
+      component: () => import("../views/admin/OrdersView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: "/admin/paiements",
+      name: "admin_payments",
+      component: () => import("../views/admin/PaymentsView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: "/admin/livraisons",
+      name: "admin_deliveries",
+      component: () => import("../views/admin/DeliveriesView.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "error_404",
       component: () => import("../views/Error404View.vue"),
@@ -77,11 +119,14 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  if (to.meta.requiresAuth) {
-    const authStore = useAuthStore();
-    if (!authStore.isLoggedIn) {
-      return { name: "login", query: { redirect: to.fullPath } };
-    }
+  const authStore = useAuthStore();
+
+  if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    return { name: "login", query: { redirect: to.fullPath } };
+  }
+
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    return { name: "home" };
   }
 });
 
