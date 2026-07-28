@@ -39,11 +39,6 @@ function mobileActiveMenu(ind) {
 </script>
 
 <template>
-  <div class="logo-header">
-    <RouterLink to="/" class="anim-logo"
-      ><img src="../assets/images/logo.png" alt="/"
-    /></RouterLink>
-  </div>
   <ul class="nav navbar-nav navbar">
     <li
       v-for="(item, ind) in menus"

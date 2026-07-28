@@ -2,24 +2,24 @@
 $enable-deprecation-messages: false;
 $ignore-warning             : true;
 
-// Color
-$primary   : #7DA640;   
-$secondary : #FE9F10 !default;
+// Color — Charte graphique Miam'n'Go
+$primary   : #FF6B35;   // Orange Miam
+$secondary : #0F3A5C;   // Bleu Confiance
 $success   : #13c24d !default;
-$info      : #00aeff !default;
-$warning   : #FFBD13 !default;
+$info      : #5B9BC5 !default;   // Bleu Ciel
+$warning   : #FFB088 !default;   // Pêche
 $danger    : #ff0003 !default;
-$light     : #faf8f2 !default;
-$dark      : #222222 !default;
+$light     : #FFF7EE !default;   // Crème
+$dark      : #22262B !default;   // Charbon
 
 
 // Body
-$body-bg   : #ffffff;
-$body-color: #666666;
+$body-bg   : #FFF7EE;
+$body-color: #22262B;
 
-// Typography
+// Typography — charte graphique Miam'n'Go
 $barlow: 'Barlow', sans-serif;
-$font-family-base : 'Poppins', sans-serif;
+$font-family-base : 'Liberation Sans', Arial, sans-serif;
 $font-family-title : 'Poppins', sans-serif;
 $headings-font-weight   : 600;
 
@@ -42,7 +42,7 @@ $sub-heading-size    : 1.6rem !default;
 $grid-gutter-width   : 30px;
 $dropdown-lik-color  : $body-color;
 $border-color        : #E1E1F0;
-$headings-color      : #222222 !default;
+$headings-color      : #0F3A5C !default;
 $grid-breakpoints    : (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1170px, xxl: 1440);
 $container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1200px) !default;
 

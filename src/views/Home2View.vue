@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import MainSlider2 from "../elements/MainSlider2.vue";
 import Home2BrouserMenu from "../components/Home2BrouserMenu.vue";
 import backgroundPic1 from "../assets/images/background/pic1.png";
@@ -19,11 +19,6 @@ const cards = ref([
   { icon: "flaticon-hamburger", title: "Fresh Healthy Food" },
   { icon: "flaticon-room-service", title: "Fast Serve On Table" },
 ]);
-
-watchEffect(function () {
-  document.body.setAttribute("data-color", "color_2");
-  localStorage.setItem("addbgActive", 1);
-});
 </script>
 
 <template>

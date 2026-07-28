@@ -1,26 +1,26 @@
 [data-color="color_1"] {
-  // Primary
-  --primary: #7da640;
-  --primary-hover: #6d9533;
-  --primary-dark: #4a6a1a;
+  // Primary — Orange Miam (charte graphique Miam'n'Go)
+  --primary: #ff6b35;
+  --primary-hover: #e85a26;
+  --primary-dark: #c2451a;
 
   // Primary RGBA
-  --rgba-primary-1: rgba(125, 166, 64, 0.1);
-  --rgba-primary-2: rgba(125, 166, 64, 0.2);
-  --rgba-primary-3: rgba(125, 166, 64, 0.3);
-  --rgba-primary-4: rgba(125, 166, 64, 0.4);
-  --rgba-primary-5: rgba(125, 166, 64, 0.5);
-  --rgba-primary-05: rgba(125, 166, 64, 0.05);
-  --rgba-primary-6: rgba(125, 166, 64, 0.6);
-  --rgba-primary-7: rgba(125, 166, 64, 0.7);
-  --rgba-primary-8: rgba(125, 166, 64, 0.8);
-  --rgba-primary-9: rgba(125, 166, 64, 0.9);
+  --rgba-primary-1: rgba(255, 107, 53, 0.1);
+  --rgba-primary-2: rgba(255, 107, 53, 0.2);
+  --rgba-primary-3: rgba(255, 107, 53, 0.3);
+  --rgba-primary-4: rgba(255, 107, 53, 0.4);
+  --rgba-primary-5: rgba(255, 107, 53, 0.5);
+  --rgba-primary-05: rgba(255, 107, 53, 0.05);
+  --rgba-primary-6: rgba(255, 107, 53, 0.6);
+  --rgba-primary-7: rgba(255, 107, 53, 0.7);
+  --rgba-primary-8: rgba(255, 107, 53, 0.8);
+  --rgba-primary-9: rgba(255, 107, 53, 0.9);
 
-  // Other variables
+  // Other variables — Bleu Confiance / Crème
   --theme-text-color: #fff;
-  --secondary: #ffc822;
-  --title: #222222;
-  --bg-light: #f4fde7;
+  --secondary: #0f3a5c;
+  --title: #0f3a5c;
+  --bg-light: #fff7ee;
 }
 
 [data-color="color_2"] {

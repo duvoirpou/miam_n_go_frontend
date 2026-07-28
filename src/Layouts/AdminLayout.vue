@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import logo from "@/assets/images/logo.png";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -24,7 +25,10 @@ async function onLogout() {
 <template>
   <div class="admin-layout">
     <aside class="admin-sidebar">
-      <div class="admin-sidebar-brand">Miam N Go <span>Admin</span></div>
+      <div class="admin-sidebar-brand">
+        <img :src="logo" alt="Miam'n'Go" />
+        <span>Admin</span>
+      </div>
       <nav class="admin-nav">
         <RouterLink
           v-for="item in navItems"
@@ -63,13 +67,13 @@ async function onLogout() {
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: #f4f6f9;
+  background: #fff7ee;
 }
 
 .admin-sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: #1c2434;
+  background: #0f3a5c;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -80,13 +84,21 @@ async function onLogout() {
 
 .admin-sidebar-brand {
   padding: 20px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.admin-sidebar-brand img {
+  height: 28px;
+  width: auto;
+}
+
 .admin-sidebar-brand span {
-  color: #ff5a1f;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff6b35;
 }
 
 .admin-nav {
@@ -110,7 +122,7 @@ async function onLogout() {
 }
 
 .admin-nav-link.active {
-  background: #ff5a1f;
+  background: #ff6b35;
   color: #fff;
   font-weight: 600;
 }
@@ -127,7 +139,7 @@ async function onLogout() {
 
 .admin-user-role {
   font-size: 0.75rem;
-  color: #ff5a1f;
+  color: #ff6b35;
   margin-bottom: 10px;
 }
 

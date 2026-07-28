@@ -192,7 +192,7 @@ window.onscroll = () => {
   height: 18px;
   padding: 0 4px;
   border-radius: 50%;
-  background: var(--bs-primary, #ff5a1f);
+  background: var(--primary, #ff6b35);
   color: #fff;
   font-size: 11px;
   line-height: 18px;
