@@ -27,7 +27,7 @@ const saving = ref(false);
 const formError = ref(null);
 
 const showForm = ref(false);
-const form = reactive({ id_orders: "", area_delivery: "", status: "PENDING" });
+const form = reactive({ order_id: "", area_delivery: "", status: "PENDING" });
 
 async function loadAll() {
   loading.value = true;
@@ -50,13 +50,13 @@ onMounted(loadAll);
 
 function ordersWithoutDelivery() {
   const deliveredOrderIds = new Set(
-    deliveries.value.map((d) => String(d.id_orders))
+    deliveries.value.map((d) => String(d.order_id))
   );
-  return orders.value.filter((o) => !deliveredOrderIds.has(String(o.id_orders)));
+  return orders.value.filter((o) => !deliveredOrderIds.has(String(o.id)));
 }
 
 function openCreateForm() {
-  form.id_orders = "";
+  form.order_id = "";
   form.area_delivery = "";
   form.status = "PENDING";
   formError.value = null;
@@ -72,7 +72,7 @@ async function submitForm() {
   formError.value = null;
   try {
     await createDelivery({
-      id_orders: Number(form.id_orders),
+      order_id: Number(form.order_id),
       area_delivery: form.area_delivery,
       status: form.status,
     });
@@ -87,14 +87,14 @@ async function submitForm() {
 }
 
 async function onStatusChange(delivery, newStatus) {
-  savingId.value = delivery.id_delivery;
+  savingId.value = delivery.id;
   error.value = null;
   try {
-    const updated = await updateDelivery(delivery.id_delivery, {
+    const updated = await updateDelivery(delivery.id, {
       status: newStatus,
     });
     const index = deliveries.value.findIndex(
-      (d) => d.id_delivery === delivery.id_delivery
+      (d) => d.id === delivery.id
     );
     if (index !== -1) deliveries.value[index] = updated;
   } catch (err) {
@@ -125,12 +125,12 @@ async function onStatusChange(delivery, newStatus) {
           <div class="row g-3">
             <div class="col-md-4">
               <label class="form-label">Commande</label>
-              <select v-model="form.id_orders" class="form-select" required>
+              <select v-model="form.order_id" class="form-select" required>
                 <option value="" disabled>Choisir…</option>
                 <option
                   v-for="order in ordersWithoutDelivery()"
-                  :key="order.id_orders"
-                  :value="order.id_orders"
+                  :key="order.id"
+                  :value="order.id"
                 >
                   {{ order.reference }}
                 </option>
@@ -188,7 +188,7 @@ async function onStatusChange(delivery, newStatus) {
               Aucune livraison pour le moment.
             </td>
           </tr>
-          <tr v-for="delivery in deliveries" :key="delivery.id_delivery">
+          <tr v-for="delivery in deliveries" :key="delivery.id">
             <td>{{ delivery.reference }}</td>
             <td>{{ delivery.order?.reference ?? "—" }}</td>
             <td>{{ delivery.area_delivery }}</td>
@@ -196,7 +196,7 @@ async function onStatusChange(delivery, newStatus) {
               <select
                 class="form-select form-select-sm"
                 :value="delivery.status"
-                :disabled="savingId === delivery.id_delivery"
+                :disabled="savingId === delivery.id"
                 @change="onStatusChange(delivery, $event.target.value)"
               >
                 <option v-for="status in DELIVERY_STATUSES" :key="status" :value="status">

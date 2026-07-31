@@ -46,7 +46,7 @@ onMounted(async () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="order in orders" :key="order.id_orders">
+            <tr v-for="order in orders" :key="order.id">
               <td>{{ order.reference }}</td>
               <td>{{ formatPrice(order.price) }}</td>
               <td>{{ order.status_order }}</td>

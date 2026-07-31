@@ -38,7 +38,7 @@ onMounted(async () => {
           <div
             class="col-lg-3 col-md-6 col-sm-6 m-b30"
             v-for="partner in partners"
-            :key="partner.id_partners"
+            :key="partner.id"
           >
             <div class="dz-img-box style-2 box-hover">
               <div class="dz-media">
@@ -46,12 +46,12 @@ onMounted(async () => {
               </div>
               <div class="dz-content">
                 <h4 class="dz-title">
-                  <RouterLink :to="`/partenaires/${partner.slug || partner.id_partners}`">{{
+                  <RouterLink :to="`/partenaires/${partner.slug || partner.id}`">{{
                     partner.label_partners
                   }}</RouterLink>
                 </h4>
                 <RouterLink
-                  :to="`/partenaires/${partner.slug || partner.id_partners}`"
+                  :to="`/partenaires/${partner.slug || partner.id}`"
                   class="btn btn-primary btn-hover-2"
                   >Voir le menu</RouterLink
                 >

@@ -32,14 +32,14 @@ async function loadPayments() {
 onMounted(loadPayments);
 
 async function onStatusChange(payment, newStatus) {
-  savingId.value = payment.id_payment;
+  savingId.value = payment.id;
   error.value = null;
   try {
-    const updated = await updatePayment(payment.id_payment, {
+    const updated = await updatePayment(payment.id, {
       status: newStatus,
     });
     const index = payments.value.findIndex(
-      (p) => p.id_payment === payment.id_payment
+      (p) => p.id === payment.id
     );
     if (index !== -1) payments.value[index] = updated;
   } catch (err) {
@@ -84,7 +84,7 @@ function statusBadgeClass(status) {
               Aucun paiement pour le moment.
             </td>
           </tr>
-          <tr v-for="payment in payments" :key="payment.id_payment">
+          <tr v-for="payment in payments" :key="payment.id">
             <td>{{ payment.reference }}</td>
             <td>{{ payment.order?.reference ?? "—" }}</td>
             <td>{{ payment.type }}</td>
@@ -99,7 +99,7 @@ function statusBadgeClass(status) {
               <select
                 class="form-select form-select-sm"
                 :value="payment.status"
-                :disabled="savingId === payment.id_payment"
+                :disabled="savingId === payment.id"
                 @change="onStatusChange(payment, $event.target.value)"
               >
                 <option v-for="status in PAYMENT_STATUSES" :key="status" :value="status">

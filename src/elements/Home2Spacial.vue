@@ -28,7 +28,7 @@ onMounted(async () => {
     <div
       class="col-lg-3 col-md-6 col-sm-6 wow fadeInUp"
       v-for="item in specials"
-      :key="item.id_products"
+      :key="item.id"
     >
       <div class="dz-img-box style-5">
         <div class="dz-content">
@@ -47,7 +47,7 @@ onMounted(async () => {
           <img :src="item.image || placeholderImg" alt="/" />
           <RouterLink
             class="detail-btn"
-            :to="`/produit/${item.slug || item.id_products}`"
+            :to="`/produit/${item.slug || item.id}`"
             ><i class="fa-solid fa-plus"></i
           ></RouterLink>
         </div>

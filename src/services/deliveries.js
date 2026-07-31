@@ -12,7 +12,7 @@ export async function getDeliveryByOrder(orderId) {
   const deliveries = await getDeliveries();
   return (
     deliveries.find(
-      (delivery) => String(delivery.id_orders) === String(orderId)
+      (delivery) => String(delivery.order_id) === String(orderId)
     ) || null
   );
 }

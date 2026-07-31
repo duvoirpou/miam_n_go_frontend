@@ -34,14 +34,14 @@ async function loadOrders() {
 onMounted(loadOrders);
 
 async function onStatusChange(order, newStatus) {
-  savingId.value = order.id_orders;
+  savingId.value = order.id;
   error.value = null;
   try {
-    const updated = await updateOrder(order.id_orders, {
+    const updated = await updateOrder(order.id, {
       status_order: newStatus,
     });
     const index = orders.value.findIndex(
-      (o) => o.id_orders === order.id_orders
+      (o) => o.id === order.id
     );
     if (index !== -1) orders.value[index] = updated;
   } catch (err) {
@@ -79,7 +79,7 @@ async function onStatusChange(order, newStatus) {
               Aucune commande pour le moment.
             </td>
           </tr>
-          <tr v-for="order in orders" :key="order.id_orders">
+          <tr v-for="order in orders" :key="order.id">
             <td>{{ order.reference }}</td>
             <td>
               {{ order.customer?.first_name_customers }}
@@ -90,7 +90,7 @@ async function onStatusChange(order, newStatus) {
               <select
                 class="form-select form-select-sm"
                 :value="order.status_order"
-                :disabled="savingId === order.id_orders"
+                :disabled="savingId === order.id"
                 @change="onStatusChange(order, $event.target.value)"
               >
                 <option v-for="status in ORDER_STATUSES" :key="status" :value="status">

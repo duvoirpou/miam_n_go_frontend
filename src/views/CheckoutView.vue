@@ -33,20 +33,20 @@ async function submitOrder() {
   try {
     const order = await createOrder({
       products: cartStore.items.map((item) => ({
-        id_products: item.product_id,
+        product_id: item.product_id,
         quantity: item.quantity,
       })),
     });
     await createPayment({
-      id_orders: order.id_orders,
+      order_id: order.id,
       type: paymentType.value,
       phone_payment: phonePayment.value,
-      transaction: `WEB-${order.id_orders}-${Date.now()}`,
+      transaction: `WEB-${order.id}-${Date.now()}`,
       response: "OK",
       status_transaction: "SUCCESS",
     });
     cartStore.clear();
-    router.push(`/commande/confirmation/${order.id_orders}`);
+    router.push(`/commande/confirmation/${order.id}`);
   } catch (err) {
     error.value =
       err.response?.data?.message ||

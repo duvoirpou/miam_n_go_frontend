@@ -26,8 +26,8 @@ const imagePreview = ref(null);
 const form = reactive({
   label_products: "",
   price: "",
-  id_category: "",
-  id_partners: "",
+  category_id: "",
+  partner_id: "",
   state: "ACTIVE",
 });
 
@@ -55,8 +55,8 @@ onMounted(loadAll);
 function resetForm() {
   form.label_products = "";
   form.price = "";
-  form.id_category = "";
-  form.id_partners = "";
+  form.category_id = "";
+  form.partner_id = "";
   form.state = "ACTIVE";
   editingId.value = null;
   formError.value = null;
@@ -70,11 +70,11 @@ function openCreateForm() {
 }
 
 function openEditForm(product) {
-  editingId.value = product.id_products;
+  editingId.value = product.id;
   form.label_products = product.label_products;
   form.price = product.price;
-  form.id_category = product.id_category;
-  form.id_partners = product.id_partners;
+  form.category_id = product.category_id;
+  form.partner_id = product.partner_id;
   form.state = product.state || "ACTIVE";
   formError.value = null;
   imageFile.value = null;
@@ -101,8 +101,8 @@ async function submitForm() {
     const payload = new FormData();
     payload.append("label_products", form.label_products);
     payload.append("price", Number(form.price));
-    payload.append("id_category", Number(form.id_category));
-    payload.append("id_partners", Number(form.id_partners));
+    payload.append("category_id", Number(form.category_id));
+    payload.append("partner_id", Number(form.partner_id));
     payload.append("state", form.state);
     if (imageFile.value) {
       payload.append("image", imageFile.value);
@@ -132,7 +132,7 @@ async function onDelete(product) {
     return;
   }
   try {
-    await deleteProduct(product.id_products);
+    await deleteProduct(product.id);
     await loadAll();
   } catch (err) {
     error.value =
@@ -181,12 +181,12 @@ async function onDelete(product) {
             </div>
             <div class="col-md-4">
               <label class="form-label">Catégorie</label>
-              <select v-model="form.id_category" class="form-select" required>
+              <select v-model="form.category_id" class="form-select" required>
                 <option value="" disabled>Choisir…</option>
                 <option
                   v-for="category in categories"
-                  :key="category.id_category"
-                  :value="category.id_category"
+                  :key="category.id"
+                  :value="category.id"
                 >
                   {{ category.label_category }}
                 </option>
@@ -194,12 +194,12 @@ async function onDelete(product) {
             </div>
             <div class="col-md-4">
               <label class="form-label">Partenaire</label>
-              <select v-model="form.id_partners" class="form-select" required>
+              <select v-model="form.partner_id" class="form-select" required>
                 <option value="" disabled>Choisir…</option>
                 <option
                   v-for="partner in partners"
-                  :key="partner.id_partners"
-                  :value="partner.id_partners"
+                  :key="partner.id"
+                  :value="partner.id"
                 >
                   {{ partner.label_partners }}
                 </option>
@@ -273,7 +273,7 @@ async function onDelete(product) {
               Aucun produit pour le moment.
             </td>
           </tr>
-          <tr v-for="product in products" :key="product.id_products">
+          <tr v-for="product in products" :key="product.id">
             <td>
               <img
                 v-if="product.image"

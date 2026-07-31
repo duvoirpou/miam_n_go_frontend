@@ -22,7 +22,7 @@ const error = ref(null);
 const filteredProducts = computed(() => {
   if (!activeCategory.value) return products.value;
   return products.value.filter(
-    (product) => product.id_category === activeCategory.value
+    (product) => product.category_id === activeCategory.value
   );
 });
 
@@ -32,8 +32,8 @@ async function loadData(partnerIdOrSlug) {
   try {
     const partnerData = await getPartner(partnerIdOrSlug);
     const [categoriesData, productsData] = await Promise.all([
-      getCategories(partnerData.id_partners),
-      getProducts({ partnerId: partnerData.id_partners }),
+      getCategories(partnerData.id),
+      getProducts({ partnerId: partnerData.id }),
     ]);
     partner.value = partnerData;
     categories.value = categoriesData;
@@ -78,11 +78,11 @@ watch(
               </button>
               <button
                 v-for="category in categories"
-                :key="category.id_category"
+                :key="category.id"
                 :class="`btn btn-outline-secondary btn-hover-2 m-r10 ${
-                  activeCategory === category.id_category ? 'active' : ''
+                  activeCategory === category.id ? 'active' : ''
                 }`"
-                @click="activeCategory = category.id_category"
+                @click="activeCategory = category.id"
               >
                 {{ category.label_category }}
               </button>
@@ -95,16 +95,16 @@ watch(
             <div
               class="col-lg-3 col-md-6 col-sm-6 m-b30"
               v-for="product in filteredProducts"
-              :key="product.id_products"
+              :key="product.id"
             >
               <ProductCard
                 :product="{
-                  id: product.id_products,
+                  id: product.id,
                   slug: product.slug,
                   label_products: product.label_products,
                   price: product.price,
                   image: product.image,
-                  partner_id: partner?.id_partners,
+                  partner_id: partner?.id,
                 }"
               />
             </div>

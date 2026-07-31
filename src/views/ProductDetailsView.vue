@@ -47,11 +47,11 @@ function addToCart() {
   try {
     cartStore.addItem(
       {
-        id: product.value.id_products,
+        id: product.value.id,
         label_products: product.value.label_products,
         price: product.value.price,
         image: product.value.image,
-        partner_id: product.value.id_partners,
+        partner_id: product.value.partner_id,
       },
       quantity.value
     );

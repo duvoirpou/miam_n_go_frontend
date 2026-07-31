@@ -49,7 +49,7 @@ function openCreateForm() {
 }
 
 function openEditForm(partner) {
-  editingId.value = partner.id_partners;
+  editingId.value = partner.id;
   form.label_partners = partner.label_partners;
   form.state = partner.state || "ACTIVE";
   formError.value = null;
@@ -100,7 +100,7 @@ async function onDelete(partner) {
     return;
   }
   try {
-    await deletePartner(partner.id_partners);
+    await deletePartner(partner.id);
     await loadPartners();
   } catch (err) {
     error.value =
@@ -198,7 +198,7 @@ async function onDelete(partner) {
               Aucun partenaire pour le moment.
             </td>
           </tr>
-          <tr v-for="partner in partners" :key="partner.id_partners">
+          <tr v-for="partner in partners" :key="partner.id">
             <td>
               <img
                 v-if="partner.image"

@@ -691,7 +691,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"label_products\": \"Burger God Favor\",\n  \"price\": 7000,\n  \"id_category\": 2,\n  \"id_partners\": 1\n}",
+              "raw": "{\n  \"label_products\": \"Burger God Favor\",\n  \"price\": 7000,\n  \"category_id\": 2,\n  \"partner_id\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -707,7 +707,7 @@
                 "products"
               ]
             },
-            "description": "Route protégée. Un PARTNER ne peut créer un produit que pour son propre `id_partners`. Réponse attendue : `201 Created`."
+            "description": "Route protégée. Un PARTNER ne peut créer un produit que pour son propre `partner_id`. Réponse attendue : `201 Created`."
           },
           "response": []
         },
@@ -727,7 +727,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"label_products\": \"Poulet Braisé\",\n  \"price\": 6000,\n  \"id_category\": 1,\n  \"id_partners\": 2\n}",
+              "raw": "{\n  \"label_products\": \"Poulet Braisé\",\n  \"price\": 6000,\n  \"category_id\": 1,\n  \"partner_id\": 2\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -743,7 +743,7 @@
                 "products"
               ]
             },
-            "description": "Route protégée. Contrairement à PARTNER, ADMIN peut créer un produit pour n'importe quel `id_partners` existant."
+            "description": "Route protégée. Contrairement à PARTNER, ADMIN peut créer un produit pour n'importe quel `partner_id` existant."
           },
           "response": []
         },
@@ -763,7 +763,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"label_products\": \"Produit interdit\",\n  \"price\": 5000,\n  \"id_category\": 1,\n  \"id_partners\": 2\n}",
+              "raw": "{\n  \"label_products\": \"Produit interdit\",\n  \"price\": 5000,\n  \"category_id\": 1,\n  \"partner_id\": 2\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -779,7 +779,7 @@
                 "products"
               ]
             },
-            "description": "Exemple de rejet de sécurité. Un token PARTNER tentant de créer un produit pour un `id_partners` qui ne lui appartient pas reçoit :\n\n```\n403 Forbidden\n{\n  \"success\": false,\n  \"message\": \"Accès refusé. Vous ne pouvez créer un produit que pour votre propre partenaire.\"\n}\n```"
+            "description": "Exemple de rejet de sécurité. Un token PARTNER tentant de créer un produit pour un `partner_id` qui ne lui appartient pas reçoit :\n\n```\n403 Forbidden\n{\n  \"success\": false,\n  \"message\": \"Accès refusé. Vous ne pouvez créer un produit que pour votre propre partenaire.\"\n}\n```"
           },
           "response": []
         },
@@ -962,7 +962,7 @@
     },
     {
       "name": "07. Orders",
-      "description": "ADMIN : toutes les commandes. PARTNER : commandes contenant au moins un de ses produits. CUSTOMER : ses propres commandes, créées avec son token (id_customers déduit automatiquement).",
+      "description": "ADMIN : toutes les commandes. PARTNER : commandes contenant au moins un de ses produits. CUSTOMER : ses propres commandes, créées avec son token (customer_id déduit automatiquement).",
       "item": [
         {
           "name": "Lister les commandes",
@@ -1003,7 +1003,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"products\": [\n    {\n      \"id_products\": 1,\n      \"quantity\": 2\n    }\n  ]\n}",
+              "raw": "{\n  \"products\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1019,7 +1019,7 @@
                 "orders"
               ]
             },
-            "description": "Route protégée, réservée au rôle CUSTOMER. Le client est identifié automatiquement via le token : NE PAS envoyer `id_customers`.\n\nStatut initial recommandé après création : `status_order = PENDING`, `status_payment = PENDING`, `status_delivery = PENDING`."
+            "description": "Route protégée, réservée au rôle CUSTOMER. Le client est identifié automatiquement via le token : NE PAS envoyer `customer_id`.\n\nStatut initial recommandé après création : `status_order = PENDING`, `status_payment = PENDING`, `status_delivery = PENDING`."
           },
           "response": []
         },
@@ -1153,7 +1153,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_orders\": 1,\n  \"type\": \"MOBILE_MONEY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"TXN-CUST-001\",\n  \"token\": \"TOKEN-CUST-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
+              "raw": "{\n  \"order_id\": 1,\n  \"type\": \"MOBILE_MONEY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"TXN-CUST-001\",\n  \"token\": \"TOKEN-CUST-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1189,7 +1189,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_orders\": 1,\n  \"type\": \"CASH_ON_DELIVERY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"CASH-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
+              "raw": "{\n  \"order_id\": 1,\n  \"type\": \"CASH_ON_DELIVERY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"CASH-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1225,7 +1225,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_orders\": 1,\n  \"type\": \"MOBILE_MONEY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"TXN-PARTNER-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
+              "raw": "{\n  \"order_id\": 1,\n  \"type\": \"MOBILE_MONEY\",\n  \"phone_payment\": \"066000000\",\n  \"transaction\": \"TXN-PARTNER-001\",\n  \"response\": \"OK\",\n  \"status_transaction\": \"SUCCESS\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1375,7 +1375,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_orders\": 1,\n  \"area_delivery\": \"Centre-ville Pointe-Noire\",\n  \"status\": \"PENDING\"\n}",
+              "raw": "{\n  \"order_id\": 1,\n  \"area_delivery\": \"Centre-ville Pointe-Noire\",\n  \"status\": \"PENDING\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

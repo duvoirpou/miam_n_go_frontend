@@ -45,7 +45,7 @@ function openCreateForm() {
 }
 
 function openEditForm(category) {
-  editingId.value = category.id_category;
+  editingId.value = category.id;
   form.label_category = category.label_category;
   form.state = category.state || "ACTIVE";
   formError.value = null;
@@ -82,7 +82,7 @@ async function onDelete(category) {
     return;
   }
   try {
-    await deleteCategory(category.id_category);
+    await deleteCategory(category.id);
     await loadCategories();
   } catch (err) {
     error.value =
@@ -160,7 +160,7 @@ async function onDelete(category) {
               Aucune catégorie pour le moment.
             </td>
           </tr>
-          <tr v-for="category in categories" :key="category.id_category">
+          <tr v-for="category in categories" :key="category.id">
             <td>{{ category.label_category }}</td>
             <td>{{ category.products?.length ?? 0 }}</td>
             <td>

@@ -14,7 +14,7 @@ const loading = ref(true);
 const filteredProducts = computed(() => {
   if (activeCategory.value === null) return products.value;
   return products.value.filter(
-    (item) => item.id_category === activeCategory.value
+    (item) => item.category_id === activeCategory.value
   );
 });
 
@@ -51,13 +51,13 @@ function filterByCategory(id) {
           </li>
           <li
             v-for="category in categories"
-            :key="category.id_category"
+            :key="category.id"
             :class="`btn ${
-              activeCategory === category.id_category ? 'active' : ''
+              activeCategory === category.id ? 'active' : ''
             }`"
           >
             <a
-              @click="filterByCategory(category.id_category)"
+              @click="filterByCategory(category.id)"
               href="javascript:void(0);"
               ><span><i class="flaticon-restaurant"></i></span
               >{{ category.label_category }}</a
@@ -75,7 +75,7 @@ function filterByCategory(id) {
         <li
           class="card-container col-lg-6 col-md-6 m-b5"
           v-for="item in filteredProducts"
-          :key="item.id_products"
+          :key="item.id"
         >
           <div class="dz-img-box style-6 wow fadeInUp">
             <div class="dz-media">
@@ -84,7 +84,7 @@ function filterByCategory(id) {
             <div class="dz-content">
               <div class="dz-head">
                 <span class="header-text"
-                  ><RouterLink :to="`/produit/${item.slug || item.id_products}`">{{
+                  ><RouterLink :to="`/produit/${item.slug || item.id}`">{{
                     item.label_products
                   }}</RouterLink></span
                 >
