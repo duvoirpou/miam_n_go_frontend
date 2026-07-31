@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "b6f2a1a0-4e2a-4b7a-9c2d-miamngo-api-v13",
     "name": "API Miam N Go - Production v1.3 + Espace Admin",
-    "description": "# API Miam N Go\n\nAPI REST Laravel 12 + Sanctum pour la plateforme de commande et livraison de repas Miam N Go.\n\n**Base URL (production)** : `https://api-miamngo.digiapp.tech/api`\n\n**Sécurité** : Laravel Sanctum avec Bearer Token. Les routes protégées nécessitent le header `Authorization: Bearer {{token}}`.\n\n**Rôles** :\n- `ADMIN` : accès total à toutes les ressources (produits, catégories, partenaires, commandes, paiements, livraisons).\n- `PARTNER` : gère uniquement les produits/commandes/paiements/livraisons liés à son ou ses restaurant(s) (table `partner_users`).\n- `CUSTOMER` : gère uniquement son propre profil, ses commandes, ses paiements et ses livraisons.\n\n**Middleware de rôle** : les mutations sur `categories` et `partners` (POST/PUT/DELETE) passent par le middleware `role:ADMIN` (alias enregistré dans `bootstrap/app.php`, implémentation dans `app/Http/Middleware/EnsureUserHasRole.php`). Une requête sans rôle suffisant reçoit `403 {success:false, message:\"Accès refusé. Rôle insuffisant.\"}` ; sans authentification, `401 Unauthenticated`.\n\n**Référentiel des statuts métier (v1.3)** :\n- `status_order` : PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED, REJECTED\n- `status_payment` : PENDING, PROCESSING, PAID, FAILED, REFUNDED, CANCELLED\n- `status_delivery` : PENDING, ASSIGNED, PICKED_UP, ON_THE_WAY, DELIVERED, FAILED, CANCELLED\n\nCycle recommandé commande : `PENDING -> CONFIRMED -> PREPARING -> READY -> COMPLETED`\nCycle recommandé livraison : `PENDING -> ASSIGNED -> PICKED_UP -> ON_THE_WAY -> DELIVERED`\n\n**Repository** : https://github.com/BabyBossKfy/miam_n_go\n**Framework** : Laravel 12 + Sanctum\n**Auteur documentation** : Franck Kianguebeni\n**Version documentation source** : v1.3 consolidée (16 juillet 2026)\n\nCollection générée à partir de `API_Miam_N_Go_Production_Auth_Roles_v1_3_Consolide.pdf`.",
+    "description": "# API Miam N Go\n\nAPI REST Laravel 12 + Sanctum pour la plateforme de commande et livraison de repas Miam N Go.\n\n**Base URL (production)** : `https://api-miamngo.digiapp.tech/api`\n\n**Sécurité** : Laravel Sanctum avec Bearer Token. Les routes protégées nécessitent le header `Authorization: Bearer {{token}}`.\n\n**Rôles** :\n- `ADMIN` : accès total à toutes les ressources (produits, catégories, partenaires, commandes, paiements, livraisons, avis).\n- `PARTNER` : gère uniquement les produits/commandes/paiements/livraisons liés à son ou ses restaurant(s) (table `partner_users`).\n- `CUSTOMER` : gère uniquement son propre profil, ses commandes, ses paiements, ses livraisons et ses avis.\n\n**Middleware de rôle** : les mutations sur `categories` et `partners` (POST/PUT/DELETE) passent par le middleware `role:ADMIN` (alias enregistré dans `bootstrap/app.php`, implémentation dans `app/Http/Middleware/EnsureUserHasRole.php`). Une requête sans rôle suffisant reçoit `403 {success:false, message:\"Accès refusé. Rôle insuffisant.\"}` ; sans authentification, `401 Unauthenticated`.\n\n**Convention de nommage des colonnes** : toutes les clés primaires sont `id` (plus de `id_products`/`id_partners`/etc.) et toutes les clés étrangères suivent le format `xxx_id` (`partner_id`, `category_id`, `customer_id`, `order_id`, `product_id`, `delivery_id`, `user_id`).\n\n**Slugs SEO** : `products` et `partners` disposent d'un champ `slug` généré automatiquement à partir du libellé (avec suffixe numérique en cas de collision). Les routes `GET/PUT/DELETE /products/{id}` et `/partners/{id}` acceptent indifféremment un ID numérique ou un slug.\n\n**Photos** : `products` et `partners` acceptent une image via `multipart/form-data` (champ `image`, 4 Mo max). L'API retourne toujours l'URL complète et prête à l'emploi. Pour les mises à jour, utilisez POST + `_method=PUT` (method spoofing) car PHP ne peuple pas `$_FILES` sur une requête PUT multipart native.\n\n**Prix** : tous les montants (`price`, `unit_price`, `total_price`) sont exprimés en FCFA (entiers, sans décimales) ; le frontend est seul responsable du formatage/affichage.\n\n**Spécialités & avis** : `products.is_special` (booléen, filtrable via `GET /products?is_special=1`) permet de mettre en avant des plats. La ressource `reviews` (note 1-5 + commentaire, liée à un client et optionnellement un partenaire) alimente la section avis clients de la page d'accueil.\n\n**Référentiel des statuts métier (v1.3)** :\n- `status_order` : PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED, REJECTED\n- `status_payment` : PENDING, PROCESSING, PAID, FAILED, REFUNDED, CANCELLED\n- `status_delivery` : PENDING, ASSIGNED, PICKED_UP, ON_THE_WAY, DELIVERED, FAILED, CANCELLED\n\nCycle recommandé commande : `PENDING -> CONFIRMED -> PREPARING -> READY -> COMPLETED`\nCycle recommandé livraison : `PENDING -> ASSIGNED -> PICKED_UP -> ON_THE_WAY -> DELIVERED`\n\n**Repository** : https://github.com/BabyBossKfy/miam_n_go\n**Framework** : Laravel 12 + Sanctum\n**Auteur documentation** : Franck Kianguebeni\n**Version documentation source** : v1.3 consolidée + photos + slugs + spécialités/avis + rename id/xxx_id (31 juillet 2026)\n\nCollection générée à partir de `API_Miam_N_Go_Production_Auth_Roles_v1_3_Consolide.pdf` et mise à jour au fil des évolutions de l'API.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -104,6 +104,21 @@
     {
       "key": "delivery_id",
       "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "review_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "product_slug",
+      "value": "burger-god-favor",
+      "type": "string"
+    },
+    {
+      "key": "partner_slug",
+      "value": "god-favor",
       "type": "string"
     }
   ],
@@ -479,7 +494,7 @@
           "response": []
         },
         {
-          "name": "Détail d'un partenaire",
+          "name": "Détail d'un partenaire (par ID)",
           "request": {
             "method": "GET",
             "header": [
@@ -499,6 +514,30 @@
               ]
             },
             "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un partenaire (par slug)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/partners/{{partner_slug}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "partners",
+                "{{partner_slug}}"
+              ]
+            },
+            "description": "Route publique. Le segment `{id}` accepte indifféremment un ID numérique ou un slug (trait `HasSlug` côté backend). Utilisé par le frontend pour des URLs SEO-friendly (`/partenaires/god-favor` au lieu de `/partenaires/1`)."
           },
           "response": []
         },
@@ -534,7 +573,51 @@
                 "partners"
               ]
             },
-            "description": "Route protégée, réservée ADMIN."
+            "description": "Route protégée, réservée ADMIN. Le `slug` est généré automatiquement à partir de `label_partners`, avec suffixe numérique en cas de collision."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un partenaire avec photo (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "label_partners",
+                  "value": "God Favor",
+                  "type": "text"
+                },
+                {
+                  "key": "state",
+                  "value": "ACTIVE",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optionnel. Formats image standards, max 4 Mo."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/partners",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "partners"
+              ]
+            },
+            "description": "Route protégée, réservée ADMIN. Stockage sur `storage/app/public/partners`, l'API renvoie l'URL complète de l'image."
           },
           "response": []
         },
@@ -571,7 +654,53 @@
                 "{{partner_id}}"
               ]
             },
-            "description": "Route protégée, réservée ADMIN."
+            "description": "Route protégée, réservée ADMIN. Si `label_partners` change, le `slug` est régénéré automatiquement."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un partenaire avec photo (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text",
+                  "description": "Spoofing de méthode obligatoire : PHP ne parse pas nativement le corps multipart d'une requête PUT."
+                },
+                {
+                  "key": "label_partners",
+                  "value": "God Favor Restaurant",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Remplace la photo existante (l'ancien fichier est supprimé du disque)."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/partners/{{partner_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "partners",
+                "{{partner_id}}"
+              ]
+            },
+            "description": "Route protégée, réservée ADMIN. Utilise POST + `_method=PUT` (method spoofing Laravel)."
           },
           "response": []
         },
@@ -624,12 +753,52 @@
                 "products"
               ]
             },
-            "description": "Route publique. Aucun token requis."
+            "description": "Route publique. Aucun token requis. Ne retourne que les produits `state = ACTIVE`."
           },
           "response": []
         },
         {
-          "name": "Détail d'un produit",
+          "name": "Lister les produits (filtres partner_id/category_id/is_special)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products?partner_id={{partner_id}}&category_id={{category_id}}&is_special=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "partner_id",
+                  "value": "{{partner_id}}",
+                  "description": "Filtre les produits d'un partenaire donné"
+                },
+                {
+                  "key": "category_id",
+                  "value": "{{category_id}}",
+                  "description": "Filtre les produits d'une catégorie donnée"
+                },
+                {
+                  "key": "is_special",
+                  "value": "1",
+                  "description": "1 = uniquement les spécialités du moment (is_special = true)"
+                }
+              ]
+            },
+            "description": "Route publique. Les trois filtres sont optionnels et combinables ; retirez ceux dont vous n'avez pas besoin. Utilisée par la page d'accueil pour les sections \"Spécialités du moment\" (`is_special=1`) et \"Nos partenaires\" (`partner_id`)."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un produit (par ID)",
           "request": {
             "method": "GET",
             "header": [
@@ -649,6 +818,30 @@
               ]
             },
             "description": "Route publique. Aucun token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un produit (par slug)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_slug}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_slug}}"
+              ]
+            },
+            "description": "Route publique. Le segment `{id}` accepte indifféremment un ID numérique ou un slug (trait `HasSlug` côté backend, méthode `findByIdOrSlugOrFail`). Le slug est généré automatiquement à partir de `label_products` à la création, avec suffixe numérique en cas de collision (ex: `burger-classic-2`)."
           },
           "response": []
         },
@@ -707,7 +900,67 @@
                 "products"
               ]
             },
-            "description": "Route protégée. Un PARTNER ne peut créer un produit que pour son propre `partner_id`. Réponse attendue : `201 Created`."
+            "description": "Route protégée. Un PARTNER ne peut créer un produit que pour son propre `partner_id`. Réponse attendue : `201 Created`. Le `slug` est généré automatiquement à partir de `label_products`."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un produit avec photo (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "label_products",
+                  "value": "Burger God Favor",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "7000",
+                  "type": "text"
+                },
+                {
+                  "key": "category_id",
+                  "value": "{{category_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "partner_id",
+                  "value": "{{partner_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "is_special",
+                  "value": "1",
+                  "type": "text",
+                  "description": "Optionnel, booléen"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optionnel. Formats image standards, max 4 Mo."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "description": "Route protégée (PARTNER/ADMIN). Même règles que la création JSON, avec upload de photo en plus via `multipart/form-data`. Le champ `image` est stocké sur `storage/app/public/products` et l'API renvoie l'URL complète accessible (accessor sur le modèle `Product`)."
           },
           "response": []
         },
@@ -816,7 +1069,58 @@
                 "{{product_id}}"
               ]
             },
-            "description": "Route protégée. PARTNER : uniquement ses propres produits. ADMIN : tous les produits."
+            "description": "Route protégée. PARTNER : uniquement ses propres produits. ADMIN : tous les produits. Si `label_products` change, le `slug` est régénéré automatiquement."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un produit avec photo (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text",
+                  "description": "Spoofing de méthode obligatoire : PHP ne parse pas nativement le corps multipart d'une requête PUT."
+                },
+                {
+                  "key": "label_products",
+                  "value": "Burger God Favor - Maxi",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "7500",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Remplace la photo existante (l'ancien fichier est supprimé du disque)."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            },
+            "description": "Route protégée. Utilise POST + `_method=PUT` (method spoofing Laravel) car PHP ne peuple pas `$_FILES` sur une requête PUT multipart native."
           },
           "response": []
         },
@@ -1477,6 +1781,222 @@
               ]
             },
             "description": "Route protégée, réservée à ADMIN."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. Reviews",
+      "description": "Avis clients affichés sur la page d'accueil. Lecture publique (uniquement les avis `status = PUBLISHED`). Création réservée aux CUSTOMER authentifiés. Modification/suppression : ADMIN (modération, tout avis) ou CUSTOMER (son propre avis uniquement).",
+      "item": [
+        {
+          "name": "Lister les avis publiés",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews"
+              ]
+            },
+            "description": "Route publique. Retourne uniquement les avis `status = PUBLISHED`, triés du plus récent au plus ancien."
+          },
+          "response": []
+        },
+        {
+          "name": "Lister les avis d'un partenaire",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews?partner_id={{partner_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "partner_id",
+                  "value": "{{partner_id}}"
+                }
+              ]
+            },
+            "description": "Route publique. Filtre optionnel `partner_id`."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un avis (CUSTOMER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"partner_id\": {{partner_id}},\n  \"rating\": 5,\n  \"comment\": \"Excellent service, plats délicieux !\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews"
+              ]
+            },
+            "description": "Route protégée, réservée au rôle CUSTOMER. Le client est identifié automatiquement via le token : NE PAS envoyer `customer_id`. `partner_id` et `comment` sont optionnels, `rating` est requis (entier entre 1 et 5). L'avis est publié immédiatement (`status = PUBLISHED`)."
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d'un avis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                "{{review_id}}"
+              ]
+            },
+            "description": "Route publique."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un avis (CUSTOMER, son propre avis)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"comment\": \"Très bon, un peu long à livrer.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                "{{review_id}}"
+              ]
+            },
+            "description": "Route protégée. CUSTOMER : uniquement son propre avis, peut modifier `rating`/`comment`. Un token CUSTOMER tentant de modifier l'avis d'un autre client reçoit `403 Forbidden`."
+          },
+          "response": []
+        },
+        {
+          "name": "Modérer un avis (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"HIDDEN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                "{{review_id}}"
+              ]
+            },
+            "description": "Route protégée, réservée ADMIN. Permet de modérer un avis en changeant son `status` (ex: `PUBLISHED`, `HIDDEN`) sans passer par le client concerné."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un avis",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reviews",
+                "{{review_id}}"
+              ]
+            },
+            "description": "Route protégée. CUSTOMER : uniquement son propre avis. ADMIN : tout avis. Suppression logique (soft delete)."
           },
           "response": []
         }
