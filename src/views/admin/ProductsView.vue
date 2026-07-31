@@ -227,7 +227,7 @@ async function onDelete(product) {
                 <img
                   :src="imagePreview"
                   alt="Aperçu"
-                  style="max-height: 80px; border-radius: 6px"
+                  style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px"
                 />
               </div>
             </div>

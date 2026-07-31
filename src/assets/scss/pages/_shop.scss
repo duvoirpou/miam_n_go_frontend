@@ -180,7 +180,9 @@
 			min-width:80px;
 			height:80px;
 			border-radius: 10px;
+			overflow:hidden;
 			img{
+				width:100%;
 				height:100%;
 				object-fit:cover;
 			}
@@ -394,7 +396,8 @@
 	.detail-media{
 		border-radius:10px;
 		overflow:hidden;
-		
+		height:400px;
+
 		img{
 			height:100%;
 			width: 100%;
