@@ -46,12 +46,12 @@ onMounted(async () => {
               </div>
               <div class="dz-content">
                 <h4 class="dz-title">
-                  <RouterLink :to="`/partenaires/${partner.id_partners}`">{{
+                  <RouterLink :to="`/partenaires/${partner.slug || partner.id_partners}`">{{
                     partner.label_partners
                   }}</RouterLink>
                 </h4>
                 <RouterLink
-                  :to="`/partenaires/${partner.id_partners}`"
+                  :to="`/partenaires/${partner.slug || partner.id_partners}`"
                   class="btn btn-primary btn-hover-2"
                   >Voir le menu</RouterLink
                 >

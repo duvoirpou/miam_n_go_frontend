@@ -26,14 +26,14 @@ const filteredProducts = computed(() => {
   );
 });
 
-async function loadData(partnerId) {
+async function loadData(partnerIdOrSlug) {
   loading.value = true;
   error.value = null;
   try {
-    const [partnerData, categoriesData, productsData] = await Promise.all([
-      getPartner(partnerId),
-      getCategories(partnerId),
-      getProducts({ partnerId }),
+    const partnerData = await getPartner(partnerIdOrSlug);
+    const [categoriesData, productsData] = await Promise.all([
+      getCategories(partnerData.id_partners),
+      getProducts({ partnerId: partnerData.id_partners }),
     ]);
     partner.value = partnerData;
     categories.value = categoriesData;
@@ -100,6 +100,7 @@ watch(
               <ProductCard
                 :product="{
                   id: product.id_products,
+                  slug: product.slug,
                   label_products: product.label_products,
                   price: product.price,
                   image: product.image,

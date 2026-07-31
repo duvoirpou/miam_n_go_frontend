@@ -64,7 +64,7 @@ onMounted(async () => {
             </div>
             <div class="dz-content">
               <h6 class="title">
-                <RouterLink :to="`/produit/${item.id_products}`">{{
+                <RouterLink :to="`/produit/${item.slug || item.id_products}`">{{
                   item.label_products
                 }}</RouterLink>
               </h6>
@@ -77,7 +77,7 @@ onMounted(async () => {
           </div>
           <RouterLink
             class="detail-btn"
-            :to="`/produit/${item.id_products}`"
+            :to="`/produit/${item.slug || item.id_products}`"
             ><i class="fa-solid fa-plus"></i
           ></RouterLink>
         </div>

@@ -29,7 +29,7 @@ function onAddToCart() {
     </div>
     <div class="dz-content">
       <h4 class="dz-title">
-        <RouterLink :to="`/produit/${product.id}`">{{
+        <RouterLink :to="`/produit/${product.slug || product.id}`">{{
           product.label_products
         }}</RouterLink>
       </h4>

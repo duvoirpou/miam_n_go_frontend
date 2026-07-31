@@ -84,7 +84,7 @@ function filterByCategory(id) {
             <div class="dz-content">
               <div class="dz-head">
                 <span class="header-text"
-                  ><RouterLink :to="`/produit/${item.id_products}`">{{
+                  ><RouterLink :to="`/produit/${item.slug || item.id_products}`">{{
                     item.label_products
                   }}</RouterLink></span
                 >

@@ -47,7 +47,7 @@ onMounted(async () => {
           <img :src="item.image || placeholderImg" alt="/" />
           <RouterLink
             class="detail-btn"
-            :to="`/produit/${item.id_products}`"
+            :to="`/produit/${item.slug || item.id_products}`"
             ><i class="fa-solid fa-plus"></i
           ></RouterLink>
         </div>
