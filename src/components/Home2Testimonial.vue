@@ -37,7 +37,7 @@ onMounted(async () => {
     <SwiperSlide
       class="swiper-slide"
       v-for="item in reviews"
-      :key="item.id_reviews"
+      :key="item.id"
     >
       <div class="testimonial-2">
         <div class="dz-media">
