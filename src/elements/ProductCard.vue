@@ -2,6 +2,7 @@
 import { RouterLink } from "vue-router";
 import placeholderImg from "@/assets/images/shop/pic1.jpg";
 import { useCartStore } from "@/stores/cart";
+import { formatPrice } from "@/utils/currency";
 
 const props = defineProps({
   product: {
@@ -32,7 +33,7 @@ function onAddToCart() {
           product.label_products
         }}</RouterLink>
       </h4>
-      <h5 class="dz-price text-primary">{{ Number(product.price).toFixed(2) }} €</h5>
+      <h5 class="dz-price text-primary">{{ formatPrice(product.price) }}</h5>
       <button class="btn btn-primary btn-hover-2" @click="onAddToCart">
         Ajouter au panier
       </button>

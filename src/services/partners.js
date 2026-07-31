@@ -13,6 +13,10 @@ export function createPartner(payload) {
 }
 
 export function updatePartner(id, payload) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    return http.post(`/partners/${id}`, payload).then(unwrap);
+  }
   return http.put(`/partners/${id}`, payload).then(unwrap);
 }
 

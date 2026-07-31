@@ -1,9 +1,13 @@
 import http, { unwrap } from "./http";
 
-export function getProducts({ partnerId, categoryId } = {}) {
+export function getProducts({ partnerId, categoryId, isSpecial } = {}) {
   return http
     .get("/products", {
-      params: { partner_id: partnerId, category_id: categoryId },
+      params: {
+        partner_id: partnerId,
+        category_id: categoryId,
+        is_special: isSpecial,
+      },
     })
     .then(unwrap);
 }
@@ -21,6 +25,10 @@ export function createProduct(payload) {
 }
 
 export function updateProduct(id, payload) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    return http.post(`/products/${id}`, payload).then(unwrap);
+  }
   return http.put(`/products/${id}`, payload).then(unwrap);
 }
 

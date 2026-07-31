@@ -9,6 +9,7 @@ import {
 } from "@/services/products";
 import { getCategories } from "@/services/categories";
 import { getPartners } from "@/services/partners";
+import { formatPrice } from "@/utils/currency";
 
 const products = ref([]);
 const categories = ref([]);
@@ -20,6 +21,8 @@ const formError = ref(null);
 
 const showForm = ref(false);
 const editingId = ref(null);
+const imageFile = ref(null);
+const imagePreview = ref(null);
 const form = reactive({
   label_products: "",
   price: "",
@@ -57,6 +60,8 @@ function resetForm() {
   form.state = "ACTIVE";
   editingId.value = null;
   formError.value = null;
+  imageFile.value = null;
+  imagePreview.value = null;
 }
 
 function openCreateForm() {
@@ -72,6 +77,8 @@ function openEditForm(product) {
   form.id_partners = product.id_partners;
   form.state = product.state || "ACTIVE";
   formError.value = null;
+  imageFile.value = null;
+  imagePreview.value = product.image || null;
   showForm.value = true;
 }
 
@@ -80,17 +87,26 @@ function closeForm() {
   resetForm();
 }
 
+function onImageChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  imageFile.value = file;
+  imagePreview.value = URL.createObjectURL(file);
+}
+
 async function submitForm() {
   saving.value = true;
   formError.value = null;
   try {
-    const payload = {
-      label_products: form.label_products,
-      price: Number(form.price),
-      id_category: Number(form.id_category),
-      id_partners: Number(form.id_partners),
-      state: form.state,
-    };
+    const payload = new FormData();
+    payload.append("label_products", form.label_products);
+    payload.append("price", Number(form.price));
+    payload.append("id_category", Number(form.id_category));
+    payload.append("id_partners", Number(form.id_partners));
+    payload.append("state", form.state);
+    if (imageFile.value) {
+      payload.append("image", imageFile.value);
+    }
     if (editingId.value) {
       await updateProduct(editingId.value, payload);
     } else {
@@ -153,11 +169,11 @@ async function onDelete(product) {
               />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Prix</label>
+              <label class="form-label">Prix (FCFA)</label>
               <input
                 v-model="form.price"
                 type="number"
-                step="0.01"
+                step="1"
                 min="0"
                 class="form-control"
                 required
@@ -196,6 +212,25 @@ async function onDelete(product) {
                 <option value="INACTIVE">INACTIVE</option>
               </select>
             </div>
+            <div class="col-md-6">
+              <label class="form-label">Photo</label>
+              <input
+                type="file"
+                accept="image/*"
+                class="form-control"
+                @change="onImageChange"
+              />
+            </div>
+            <div class="col-md-6" v-if="imagePreview">
+              <label class="form-label">Aperçu</label>
+              <div>
+                <img
+                  :src="imagePreview"
+                  alt="Aperçu"
+                  style="max-height: 80px; border-radius: 6px"
+                />
+              </div>
+            </div>
           </div>
           <p v-if="formError" class="text-danger mt-3 mb-0">{{ formError }}</p>
           <div class="mt-3 d-flex gap-2">
@@ -223,6 +258,7 @@ async function onDelete(product) {
       <table class="table table-bordered bg-white align-middle">
         <thead class="table-light">
           <tr>
+            <th>Photo</th>
             <th>Libellé</th>
             <th>Prix</th>
             <th>Catégorie</th>
@@ -233,13 +269,22 @@ async function onDelete(product) {
         </thead>
         <tbody>
           <tr v-if="!products.length">
-            <td colspan="6" class="text-center text-muted py-4">
+            <td colspan="7" class="text-center text-muted py-4">
               Aucun produit pour le moment.
             </td>
           </tr>
           <tr v-for="product in products" :key="product.id_products">
+            <td>
+              <img
+                v-if="product.image"
+                :src="product.image"
+                alt=""
+                style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px"
+              />
+              <span v-else class="text-muted">—</span>
+            </td>
             <td>{{ product.label_products }}</td>
-            <td>{{ Number(product.price).toFixed(2) }} €</td>
+            <td>{{ formatPrice(product.price) }}</td>
             <td>{{ product.category?.label_category ?? "—" }}</td>
             <td>{{ product.partner?.label_partners ?? "—" }}</td>
             <td>

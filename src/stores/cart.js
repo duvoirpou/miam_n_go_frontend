@@ -43,6 +43,7 @@ export const useCartStore = defineStore("cart", {
           product_id: product.id,
           label: product.label_products,
           unit_price: product.price,
+          image: product.image,
           quantity,
           partner_id: product.partner_id,
         });

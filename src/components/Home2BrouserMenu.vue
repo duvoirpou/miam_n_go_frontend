@@ -1,38 +1,43 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { RouterLink } from "vue-router";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation } from "swiper/modules";
-import menuSmallPic1 from "../assets/images/menu-small/pic1.png";
-import menuSmallPic2 from "../assets/images/menu-small/pic2.png";
-import menuSmallPic3 from "../assets/images/menu-small/pic3.png";
-import menuSmallPic4 from "../assets/images/menu-small/pic4.png";
-import menuSmallPic5 from "../assets/images/menu-small/pic5.png";
-import menuSmallPic6 from "../assets/images/menu-small/pic6.png";
-
-const menus = ref([
-  { name: "Burger", img: menuSmallPic1, price: "$10.00" },
-  { name: "Hot Rice", img: menuSmallPic2, price: "$15.00" },
-  { name: "Momos", img: menuSmallPic3, price: "$10.00" },
-  { name: "Pasta", img: menuSmallPic4, price: "$25.00" },
-  { name: "Panner", img: menuSmallPic5, price: "$20.00" },
-  { name: "Soya Rice", img: menuSmallPic6, price: "$90.00" },
-  { name: "Burger", img: menuSmallPic1, price: "$10.00" },
-  { name: "Hot Rice", img: menuSmallPic2, price: "$15.00" },
-]);
+import { getProducts } from "@/services/products";
+import { formatPrice } from "@/utils/currency";
+import placeholderImg from "@/assets/images/shop/pic1.jpg";
 
 defineProps({
   next: String,
   prev: String,
 });
+
+const products = ref([]);
+const loading = ref(true);
+
+onMounted(async () => {
+  try {
+    products.value = await getProducts();
+  } catch (err) {
+    products.value = [];
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template>
   <div class="container">
+    <div v-if="loading" class="text-center py-4">Chargement…</div>
+    <div v-else-if="!products.length" class="text-center py-4">
+      Aucun produit disponible pour le moment.
+    </div>
     <Swiper
+      v-else
       class="swiper menu-swiper swiper-visible swiper-item-4"
       :slides-per-view="4"
       :space-between="30"
-      :loop="true"
+      :loop="products.length > 4"
       :modules="[Autoplay, Navigation]"
       :speed="1500"
       :autoplay="{ delay: 1500 }"
@@ -47,24 +52,32 @@ defineProps({
         240: { slidesPerView: 1 },
       }"
     >
-      <SwiperSlide class="swiper-slide" v-for="(item, ind) in menus" :key="ind">
+      <SwiperSlide
+        class="swiper-slide"
+        v-for="item in products"
+        :key="item.id_products"
+      >
         <div class="dz-img-box style-4 box-hover wow fadeInUp">
           <div class="menu-detail">
             <div class="dz-media">
-              <img :src="item.img" alt="/" />
+              <img :src="item.image || placeholderImg" alt="/" />
             </div>
             <div class="dz-content">
               <h6 class="title">
-                <RouterLink to="/partenaires">{{ item.name }}</RouterLink>
+                <RouterLink :to="`/produit/${item.id_products}`">{{
+                  item.label_products
+                }}</RouterLink>
               </h6>
-              <p>Delicious and Spicy</p>
+              <p>{{ item.partner?.label_partners }}</p>
             </div>
           </div>
           <div class="menu-footer">
-            <span>Regular Price</span>
-            <span class="price">{{ item.price }}</span>
+            <span>Prix</span>
+            <span class="price">{{ formatPrice(item.price) }}</span>
           </div>
-          <RouterLink class="detail-btn" to="/partenaires"
+          <RouterLink
+            class="detail-btn"
+            :to="`/produit/${item.id_products}`"
             ><i class="fa-solid fa-plus"></i
           ></RouterLink>
         </div>

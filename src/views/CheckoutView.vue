@@ -8,6 +8,7 @@ import Footer2View from "../Layouts/Footer2View.vue";
 import { useCartStore } from "@/stores/cart";
 import { createOrder } from "@/services/orders";
 import { createPayment } from "@/services/payments";
+import { formatPrice } from "@/utils/currency";
 
 const router = useRouter();
 const cartStore = useCartStore();
@@ -108,13 +109,13 @@ async function submitOrder() {
                     <tr v-for="item in cartStore.items" :key="item.product_id">
                       <td>{{ item.label }} × {{ item.quantity }}</td>
                       <td class="price text-primary text-end">
-                        {{ (item.unit_price * item.quantity).toFixed(2) }} €
+                        {{ formatPrice(item.unit_price * item.quantity) }}
                       </td>
                     </tr>
                     <tr class="total">
                       <td><h6>Total</h6></td>
                       <td class="price text-primary text-end">
-                        {{ cartStore.totalPrice.toFixed(2) }} €
+                        {{ formatPrice(cartStore.totalPrice) }}
                       </td>
                     </tr>
                   </tbody>

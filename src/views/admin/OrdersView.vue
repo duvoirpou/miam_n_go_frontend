@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { getOrders, updateOrder } from "@/services/orders";
+import { formatPrice } from "@/utils/currency";
 
 const ORDER_STATUSES = [
   "PENDING",
@@ -84,7 +85,7 @@ async function onStatusChange(order, newStatus) {
               {{ order.customer?.first_name_customers }}
               {{ order.customer?.last_name_customers }}
             </td>
-            <td>{{ Number(order.price).toFixed(2) }} €</td>
+            <td>{{ formatPrice(order.price) }}</td>
             <td>
               <select
                 class="form-select form-select-sm"

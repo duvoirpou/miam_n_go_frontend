@@ -1,88 +1,42 @@
 <script setup>
-import { ref } from "vue";
-import meniSmallGridPic1 from "../assets/images/menu-small/grid/pic1.png";
-import meniSmallGridPic2 from "../assets/images/menu-small/grid/pic2.png";
-import meniSmallGridPic3 from "../assets/images/menu-small/grid/pic3.png";
-import meniSmallGridPic4 from "../assets/images/menu-small/grid/pic4.png";
-import meniSmallGridPic5 from "../assets/images/menu-small/grid/pic5.png";
-import meniSmallGridPic6 from "../assets/images/menu-small/grid/pic6.png";
-import meniSmallGridPic7 from "../assets/images/menu-small/grid/pic7.png";
-import meniSmallGridPic8 from "../assets/images/menu-small/grid/pic8.png";
+import { ref, computed, onMounted } from "vue";
 import { RouterLink } from "vue-router";
+import { getProducts } from "@/services/products";
+import { getCategories } from "@/services/categories";
+import { formatPrice } from "@/utils/currency";
+import placeholderImg from "@/assets/images/shop/pic1.jpg";
 
-const buttons = ref([
-  { title: "All", icon: "flaticon-fast-food" },
-  { title: "COLD DRINK", icon: "flaticon-cocktail" },
-  { title: "PIZZA", icon: "flaticon-pizza-slice" },
-  { title: "SALAD", icon: "flaticon-salad" },
-  { title: "SWEETS", icon: "flaticon-cupcake" },
-  { title: "SPICY", icon: "flaticon-chili-pepper" },
-  { title: "BURGER", icon: "flaticon-hamburger-1" },
-]);
-const menus = [
-  {
-    img: meniSmallGridPic1,
-    name: "Pulled Chicken SandWich",
-    price: "$30",
-    categery: "COLD DRINK",
-  },
-  {
-    img: meniSmallGridPic2,
-    name: "Canada Dry Ginger Ale",
-    price: "$60",
-    categery: "SALAD",
-  },
-  {
-    img: meniSmallGridPic3,
-    name: "Martinelli’s Apple Juice",
-    price: "$80",
-    categery: "PIZZA",
-  },
-  {
-    img: meniSmallGridPic4,
-    name: "Mango Mania Smoothie",
-    price: "$30",
-    categery: "SALAD",
-  },
-  {
-    img: meniSmallGridPic5,
-    name: "BBQ Chicken Sandwich",
-    price: "$30",
-    categery: "BURGER",
-  },
-  {
-    img: meniSmallGridPic6,
-    name: "Honey Mustard Pasta",
-    price: "$20",
-    categery: "SPICY",
-  },
-  {
-    img: meniSmallGridPic7,
-    name: "Chicken Honey Plate",
-    price: "$80",
-    categery: "SWEETS",
-  },
-  {
-    img: meniSmallGridPic8,
-    name: "Jamaican Jerk Sandwich",
-    price: "$80",
-    categery: "COLD DRINK",
-  },
-];
+const products = ref([]);
+const categories = ref([]);
+const activeCategory = ref(null);
+const loading = ref(true);
 
-let menuList = menus;
-let addClass = ref(0);
+const filteredProducts = computed(() => {
+  if (activeCategory.value === null) return products.value;
+  return products.value.filter(
+    (item) => item.id_category === activeCategory.value
+  );
+});
 
-const filterGalleryButton = (el, name) => {
-  addClass.value = el;
-  let updateItems = menus.filter((ell) => {
-    return ell.categery === name;
-  });
-  menuList = updateItems;
-  if (name === "All") {
-    menuList = menus;
+onMounted(async () => {
+  try {
+    const [productsData, categoriesData] = await Promise.all([
+      getProducts(),
+      getCategories(),
+    ]);
+    products.value = productsData;
+    categories.value = categoriesData;
+  } catch (err) {
+    products.value = [];
+    categories.value = [];
+  } finally {
+    loading.value = false;
   }
-};
+});
+
+function filterByCategory(id) {
+  activeCategory.value = id;
+}
 </script>
 
 <template>
@@ -90,42 +44,57 @@ const filterGalleryButton = (el, name) => {
     <div class="col-lg-12 text-center wow fadeInUp">
       <div class="site-filters style-2 clearfix">
         <ul class="filters">
+          <li :class="`btn ${activeCategory === null ? 'active' : ''}`">
+            <a @click="filterByCategory(null)" href="javascript:void(0);"
+              ><span><i class="flaticon-fast-food"></i></span>Tout</a
+            >
+          </li>
           <li
-            v-for="(item, ind) in buttons"
-            :key="ind"
-            :class="`btn ${addClass === ind ? 'active' : ''}`"
+            v-for="category in categories"
+            :key="category.id_category"
+            :class="`btn ${
+              activeCategory === category.id_category ? 'active' : ''
+            }`"
           >
             <a
-              @click="filterGalleryButton(ind, item.title)"
+              @click="filterByCategory(category.id_category)"
               href="javascript:void(0);"
-              ><span><i :class="item.icon"></i></span>{{ item.title }}</a
+              ><span><i class="flaticon-restaurant"></i></span
+              >{{ category.label_category }}</a
             >
           </li>
         </ul>
       </div>
     </div>
-    <div class="clearfix">
+    <div v-if="loading" class="col-lg-12 text-center py-4">Chargement…</div>
+    <div v-else-if="!filteredProducts.length" class="col-lg-12 text-center py-4">
+      Aucun produit disponible dans cette catégorie.
+    </div>
+    <div v-else class="clearfix">
       <ul id="masonry" class="row dlab-gallery-listing gallery">
         <li
-          class="card-container col-lg-6 col-md-6 m-b5 All drink sweet salad"
-          v-for="(item, ind) in menuList"
-          :key="ind"
+          class="card-container col-lg-6 col-md-6 m-b5"
+          v-for="item in filteredProducts"
+          :key="item.id_products"
         >
           <div class="dz-img-box style-6 wow fadeInUp">
             <div class="dz-media">
-              <img :src="item.img" alt="/" />
+              <img :src="item.image || placeholderImg" alt="/" />
             </div>
             <div class="dz-content">
               <div class="dz-head">
                 <span class="header-text"
-                  ><RouterLink to="/partenaires">{{ item.name }}</RouterLink></span
+                  ><RouterLink :to="`/produit/${item.id_products}`">{{
+                    item.label_products
+                  }}</RouterLink></span
                 >
                 <span class="img-line"></span>
-                <span class="header-price">{{ item.price }}</span>
+                <span class="header-price"
+                  >{{ formatPrice(item.price) }}</span
+                >
               </div>
               <p class="dz-body">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
+                {{ item.partner?.label_partners }}
               </p>
             </div>
           </div>

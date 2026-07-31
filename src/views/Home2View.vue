@@ -6,18 +6,27 @@ import backgroundPic1 from "../assets/images/background/pic1.png";
 import Home2Spacial from "../elements/Home2Spacial.vue";
 import Home2AreMenu from "../components/Home2AreMenu.vue";
 import Home2Testimonial from "../components/Home2Testimonial.vue";
-import Home2TeamSwiper from "../components/Home2TeamSwiper.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 
-// image
-import bgimg from "../assets/images/background/pic10.png";
 import { RouterLink } from "vue-router";
 import Header2 from "../Layouts/Header2.vue";
 
 const cards = ref([
-  { icon: "flaticon-offer", title: "Discount Voucher" },
-  { icon: "flaticon-hamburger", title: "Fresh Healthy Food" },
-  { icon: "flaticon-room-service", title: "Fast Serve On Table" },
+  {
+    icon: "flaticon-offer",
+    title: "Bons de réduction",
+    text: "Profitez de réductions exclusives chez nos partenaires.",
+  },
+  {
+    icon: "flaticon-hamburger",
+    title: "Plats frais et sains",
+    text: "Des ingrédients de qualité préparés chaque jour par nos partenaires.",
+  },
+  {
+    icon: "flaticon-room-service",
+    title: "Livraison rapide",
+    text: "Vos plats livrés chauds, en un minimum de temps.",
+  },
 ]);
 </script>
 
@@ -41,9 +50,9 @@ const cards = ref([
               </div>
               <div class="icon-content">
                 <h5 class="dz-title">
-                  <RouterLink to="/services">{{ item.title }}</RouterLink>
+                  <RouterLink to="/partenaires">{{ item.title }}</RouterLink>
                 </h5>
-                <p>lorem ipsum dolor shit amet lorem ipsum</p>
+                <p>{{ item.text }}</p>
               </div>
             </div>
           </div>
@@ -53,7 +62,7 @@ const cards = ref([
     <section class="content-inner-1 overflow-hidden pt-0">
       <div class="container">
         <div class="section-head menu-align">
-          <h2 class="title mb-0 wow flipInX">Browse Our Menu</h2>
+          <h2 class="title mb-0 wow flipInX">Découvrez notre menu</h2>
           <div class="pagination-align wow fadeInUp">
             <div class="menu-button-prev1 btn-prev rounded-xl btn-hover-2">
               <i class="fa-solid fa-arrow-left"></i>
@@ -73,7 +82,7 @@ const cards = ref([
     >
       <div class="container">
         <div class="section-head text-center">
-          <h2 class="title text-white wow flipInX">Today's Special</h2>
+          <h2 class="title text-white wow flipInX">Spécialités du moment</h2>
         </div>
         <Home2Spacial />
       </div>
@@ -81,27 +90,15 @@ const cards = ref([
     <section class="content-inner-1">
       <div class="container">
         <div class="section-head text-center">
-          <h2 class="title wow flipInX">Are Menu</h2>
+          <h2 class="title wow flipInX">Notre menu</h2>
         </div>
         <Home2AreMenu />
-      </div>
-    </section>
-    <section
-      class="section-wrapper-4 content-inner overflow-hidden bg-parallax"
-      :style="` background-image: url(${bgimg});
-        background-attachment: fixed;`"
-    >
-      <div class="container">
-        <div class="section-head text-center">
-          <h2 class="title wow flipInX">Meet The</h2>
-        </div>
-        <Home2TeamSwiper />
       </div>
     </section>
     <section class="content-inner-2 overflow-hidden">
       <div class="container">
         <div class="section-head text-center">
-          <h2 class="title wow flipInX">Customer's Comment</h2>
+          <h2 class="title wow flipInX">Avis de nos clients</h2>
         </div>
         <Home2Testimonial />
       </div>

@@ -21,8 +21,7 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                     </RouterLink>
                   </div>
                   <p class="text-white mb-0 font-14">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry.
+                    Miam N'Go, votre restaurant de cuisine africaine, situé à Pointe-Noire, vous propose des plats délicieux et des expériences culinaires uniques.
                   </p>
                 </div>
                 <div
@@ -30,7 +29,7 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                   data-wow-delay="0.6s"
                 >
                   <h4 class="text-white title m-b15">
-                    Subscribe To Our Newsletter
+                    Abonnez-vous à notre newsletter
                   </h4>
                   <Footer2Subscrption  title="Subscribe"/>
                 </div>
@@ -48,21 +47,21 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                   <li>
                     <i class="flaticon-placeholder"></i>
                     <p>
-                      1247/Plot No. 39, 15th Phase, Colony, Kkatpally, Hyderabad
+                      31 Juillet, Pointe-Noire
                     </p>
                   </li>
                   <li>
                     <i class="flaticon-telephone"></i>
                     <p>
-                      +91 987-654-3210<br />
-                      +91 123-456-7890
+                      +242 05 576 47 52<br />
+                      +242 05 576 47 52
                     </p>
                   </li>
                   <li>
                     <i class="flaticon-email-1"></i>
                     <p>
-                      info@example.com<br />
-                      info@example.com
+                      miamngo@gmail.com<br />
+                      <!-- miamngo@gmail.com -->
                     </p>
                   </li>
                 </ul>
@@ -119,7 +118,7 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                 <ul>
                   <li>
                     <RouterLink to="/contact-us"
-                      ><span>Contact Us</span></RouterLink
+                      ><span>Contactez-nous</span></RouterLink
                     >
                   </li>
                 </ul>
@@ -135,7 +134,7 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
         <div class="row">
           <div class="col-xl-6 col-lg-6">
             <span class="copyright-text"
-              >Crafted With
+              >Conçu avec
               <span
                 class="heart"
                 @click="
@@ -144,9 +143,9 @@ import Footer2Subscrption from "./Footer2Subscrption.vue";
                   }
                 "
               ></span>
-              by
-              <a href="https://dexignzone.com/" target="_blank"
-                >DexignZone</a
+              par
+              <a href="https://tala.cg/" target="_blank"
+                >Tala</a
               ></span
             >
           </div>

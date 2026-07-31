@@ -8,6 +8,7 @@ import Header2 from "../Layouts/Header2.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 import { getProduct } from "@/services/products";
 import { useCartStore } from "@/stores/cart";
+import { formatPrice } from "@/utils/currency";
 
 const route = useRoute();
 const router = useRouter();
@@ -49,6 +50,7 @@ function addToCart() {
         id: product.value.id_products,
         label_products: product.value.label_products,
         price: product.value.price,
+        image: product.value.image,
         partner_id: product.value.id_partners,
       },
       quantity.value
@@ -83,7 +85,7 @@ function addToCart() {
                 <li>
                   Prix
                   <span class="text-primary m-t5"
-                    >{{ Number(product.price).toFixed(2) }} €</span
+                    >{{ formatPrice(product.price) }}</span
                   >
                 </li>
                 <li>

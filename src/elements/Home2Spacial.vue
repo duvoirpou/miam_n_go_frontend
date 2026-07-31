@@ -1,64 +1,53 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
-import galleryGridPic1 from "../assets/images/gallery/grid3/pic1.jpg";
-import galleryGridPic2 from "../assets/images/gallery/grid3/pic2.jpg";
-import galleryGridPic3 from "../assets/images/gallery/grid3/pic3.jpg";
-import galleryGridPic4 from "../assets/images/gallery/grid3/pic4.jpg";
+import { getProducts } from "@/services/products";
+import { formatPrice } from "@/utils/currency";
+import placeholderImg from "@/assets/images/shop/pic1.jpg";
 
-const spacialmenu = ref([
-  {
-    img: galleryGridPic1,
-    name: "Pizza",
-    weight: "756g",
-    title: "Pepperoni",
-    price: "$15.00",
-  },
-  {
-    img: galleryGridPic2,
-    name: "Pancake",
-    weight: "756g",
-    title: "Pancake stack",
-    price: "$18.00",
-  },
-  {
-    img: galleryGridPic3,
-    name: "Salad",
-    weight: "756g",
-    title: "Halumini",
-    price: "$10.00",
-  },
-  {
-    img: galleryGridPic4,
-    name: "Egg",
-    weight: "756g",
-    title: "Eggs",
-    price: "$12.00",
-  },
-]);
+const specials = ref([]);
+const loading = ref(true);
+
+onMounted(async () => {
+  try {
+    specials.value = await getProducts({ isSpecial: true });
+  } catch (err) {
+    specials.value = [];
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template lang="">
-  <div class="row">
+  <div v-if="loading" class="text-center text-white py-4">Chargement…</div>
+  <div v-else-if="!specials.length" class="text-center text-white py-4">
+    Aucune spécialité du moment pour l'instant.
+  </div>
+  <div v-else class="row">
     <div
       class="col-lg-3 col-md-6 col-sm-6 wow fadeInUp"
-      v-for="(item, ind) in spacialmenu"
-      :key="ind"
+      v-for="item in specials"
+      :key="item.id_products"
     >
       <div class="dz-img-box style-5">
         <div class="dz-content">
           <div class="weight">
-            <span>{{ item.name }}</span>
-            <span>{{ item.weight }}</span>
+            <span>{{ item.partner?.label_partners }}</span>
+            <span>{{ item.category?.label_category }}</span>
           </div>
           <div class="price">
-            <h6>{{ item.title }}</h6>
-            <h6 class="text-primary">{{ item.price }}</h6>
+            <h6>{{ item.label_products }}</h6>
+            <h6 class="text-primary">
+              {{ formatPrice(item.price) }}
+            </h6>
           </div>
         </div>
         <div class="dz-media">
-          <img :src="item.img" alt="/" />
-          <RouterLink class="detail-btn" to="/partenaires"
+          <img :src="item.image || placeholderImg" alt="/" />
+          <RouterLink
+            class="detail-btn"
+            :to="`/produit/${item.id_products}`"
             ><i class="fa-solid fa-plus"></i
           ></RouterLink>
         </div>

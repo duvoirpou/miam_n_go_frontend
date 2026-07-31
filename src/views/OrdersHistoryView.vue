@@ -6,6 +6,7 @@ import bgimg from "@/assets/images/banner/bnr1.jpg";
 import Header2 from "../Layouts/Header2.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 import { getOrders } from "@/services/orders";
+import { formatPrice } from "@/utils/currency";
 
 const orders = ref([]);
 const loading = ref(true);
@@ -47,7 +48,7 @@ onMounted(async () => {
           <tbody>
             <tr v-for="order in orders" :key="order.id_orders">
               <td>{{ order.reference }}</td>
-              <td>{{ Number(order.price).toFixed(2) }} €</td>
+              <td>{{ formatPrice(order.price) }}</td>
               <td>{{ order.status_order }}</td>
               <td>{{ order.status_delivery }}</td>
               <td>{{ order.status_payment }}</td>

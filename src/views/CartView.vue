@@ -6,6 +6,7 @@ import placeholderImg from "@/assets/images/shop/pic1.jpg";
 import Header2 from "../Layouts/Header2.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 import { useCartStore } from "@/stores/cart";
+import { formatPrice } from "@/utils/currency";
 
 const cartStore = useCartStore();
 
@@ -50,7 +51,7 @@ function cartCounterBtn(action, productId, quantity) {
                   :key="item.product_id"
                 >
                   <div class="dz-media">
-                    <img :src="placeholderImg" alt="/" />
+                    <img :src="item.image || placeholderImg" alt="/" />
                   </div>
                   <div class="dz-content">
                     <div class="dz-head">
@@ -99,7 +100,7 @@ function cartCounterBtn(action, productId, quantity) {
                         </div>
                       </div>
                       <h5 class="price text-primary mb-0">
-                        {{ (item.unit_price * item.quantity).toFixed(2) }} €
+                        {{ formatPrice(item.unit_price * item.quantity) }}
                       </h5>
                     </div>
                   </div>
@@ -111,7 +112,7 @@ function cartCounterBtn(action, productId, quantity) {
                       <tr class="total">
                         <td><h6>Total à payer</h6></td>
                         <td class="price text-primary">
-                          {{ cartStore.totalPrice.toFixed(2) }} €
+                          {{ formatPrice(cartStore.totalPrice) }}
                         </td>
                       </tr>
                     </tbody>
