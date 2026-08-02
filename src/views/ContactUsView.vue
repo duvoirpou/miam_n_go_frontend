@@ -38,7 +38,7 @@ const hoverActive = ref(1);
 <template>
   <div class="page-content bg-white">
     <Header2 />
-    <CommonBanner :img="bgimg" heading="Contact Us" title="Contact Us" />
+    <CommonBanner :img="bgimg" heading="Contactez-nous" title="Contactez-nous" />
     <section class="section-wrapper-8 content-inner-1">
       <div class="container">
         <div class="row inner-section-wrapper align-items-center">
@@ -67,7 +67,7 @@ const hoverActive = ref(1);
           </div>
         </div>
         <div class="section-head text-center">
-          <h2 class="title">Reservation</h2>
+          <h2 class="title">Réservation</h2>
         </div>
         <form
           class="dzForm dezPlaceAni"
@@ -83,7 +83,7 @@ const hoverActive = ref(1);
           />
           <div class="row">
             <div class="col-lg-6 col-md-6 m-b30 m-sm-b50">
-              <label class="form-label text-primary">Your Name</label>
+              <label class="form-label text-primary">Votre Nom</label>
               <div class="input-group input-line input-black">
                 <input
                   name="dzName"
@@ -95,7 +95,7 @@ const hoverActive = ref(1);
               </div>
             </div>
             <div class="col-lg-6 col-md-6 m-b30 m-sm-b50">
-              <label class="form-label text-primary">Your Email</label>
+              <label class="form-label text-primary">Votre Email</label>
               <div class="input-group input-line input-black">
                 <input
                   name="dzEmail"
@@ -107,7 +107,7 @@ const hoverActive = ref(1);
               </div>
             </div>
             <div class="col-lg-6 col-md-6 m-b30 m-sm-b50">
-              <label class="form-label text-primary">Your Number</label>
+              <label class="form-label text-primary">Votre Numéro</label>
               <div class="input-group input-line input-black">
                 <input
                   name="dzPhoneNumber"
@@ -119,7 +119,7 @@ const hoverActive = ref(1);
               </div>
             </div>
             <div class="col-lg-6 col-md-6 m-b30 m-sm-b50">
-              <label class="form-label text-primary">Members</label>
+              <label class="form-label text-primary">Membres</label>
               <div class="input-group input-line input-black">
                 <input
                   name="dzOther[Person]"
@@ -131,7 +131,7 @@ const hoverActive = ref(1);
               </div>
             </div>
             <div class="col-sm-12 m-b40">
-              <label class="form-label text-primary">Message</label>
+              <label class="form-label text-primary">Votre Message</label>
               <div class="input-group input-line input-black">
                 <textarea
                   name="dzMessage"
@@ -165,7 +165,7 @@ const hoverActive = ref(1);
                 type="submit"
                 class="btn btn-primary btn-hover-1"
               >
-                <span>Book A Table</span>
+                <span>Réserver une table</span>
               </button>
             </div>
           </div>

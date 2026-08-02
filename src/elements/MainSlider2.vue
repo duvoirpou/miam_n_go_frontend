@@ -101,15 +101,15 @@ const mainCarosel = ref([
                     <RouterLink
                       to="/contact-us"
                       class="btn btn-primary btn-md shadow-primary m-r30 btn-hover-1"
-                      ><span>Book a Table</span></RouterLink
+                      ><span>Réserver une table</span></RouterLink
                     >
                     <RouterLink
                       to="/partenaires"
                       class="btn btn-outline-primary btn-md shadow-primary btn-hover-1"
-                      ><span>View More</span></RouterLink
+                      ><span>Voir plus</span></RouterLink
                     >
                   </div>
-                  <div class="food-card">
+                  <!-- <div class="food-card">
                     <div class="dz-head">
                       <h5 class="text-white title">{{ item.name }}</h5>
                       <ul class="rating">
@@ -147,7 +147,7 @@ const mainCarosel = ref([
                       src="../assets/images/main-slider/slider2/line.png"
                       alt="/"
                     />
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="col-xl-5 col-lg-5 col-md-4">

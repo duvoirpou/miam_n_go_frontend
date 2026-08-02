@@ -21,7 +21,7 @@ defineProps({
         <!-- Breadcrumb Row -->
         <nav aria-label="breadcrumb" class="breadcrumb-row">
           <ul class="breadcrumb">
-            <li class="breadcrumb-item"><RouterLink to="/">Home</RouterLink></li>
+            <li class="breadcrumb-item"><RouterLink to="/">Accueil</RouterLink></li>
             <li class="breadcrumb-item active" aria-current="page">
               {{ title }}
             </li>
