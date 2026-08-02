@@ -8,27 +8,27 @@ import Footer2View from "../Layouts/Footer2View.vue";
 const detailCard = ref([
   {
     icon: "flaticon-placeholder",
-    title: "Location",
-    text: "6952 Shelley St",
-    text2: "Melbource",
+    title: "Adresse",
+    text: "Centre-ville",
+    text2: "Pointe-Noire",
   },
   {
     icon: "flaticon-telephone",
-    title: "Phone Number",
-    text: "+(800) 800-900-100",
-    text2: "+222 33 567 8665",
+    title: "Téléphone",
+    text: "+242 05 576 47 52",
+    text2: "+242 05 576 47 52",
   },
   {
     icon: "flaticon-email-1",
-    title: "Email Address",
-    text: "Info@Webmail.com",
-    text2: "Info@Example.web.com",
+    title: "Adresse email",
+    text: "info@miamngo.com",
+    text2: "info@miamngo.com",
   },
   {
     icon: "flaticon-clock-1",
-    title: "Open & Closing",
-    text: "Mon - Fri: 09:00am ",
-    text2: "to  07.00pm",
+    title: "Ouverture/Fermeture",
+    text: "Lundi - Vendredi: 07:00 ",
+    text2: "à 19:00",
   },
 ]);
 
