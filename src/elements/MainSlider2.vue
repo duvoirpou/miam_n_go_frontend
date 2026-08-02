@@ -44,13 +44,13 @@ const mainCarosel = ref([
 <template>
   <div class="main-bnr-three overflow-hidden top-space">
     <div class="swiper-bnr-pagination left-align">
-      <div class="main-button-prev"><i class="icon-arrow-up"></i></div>
+      <div class="main-button-prev"><i class="icon-arrow-left"></i></div>
       <div class="main-swiper3-pagination"></div>
-      <div class="main-button-next"><i class="icon-arrow-down"></i></div>
+      <div class="main-button-next"><i class="icon-arrow-right"></i></div>
     </div>
     <Swiper
       class="main-slider-3"
-      direction="vertical"
+      direction="horizontal"
       :speed="1200"
       :modules="[Parallax, Navigation, Pagination, Autoplay]"
       :parallax="true"
