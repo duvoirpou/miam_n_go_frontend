@@ -13,7 +13,7 @@ defineProps({
     class="dz-bnr-inr style-1 text-center bg-parallax bg-parallax"
     :style="`  background-image: url(${img});
       background-size: cover;
-      background-position: center;`"
+      background-position: center bottom;`"
   >
     <div class="container">
       <div class="dz-bnr-inr-entry">

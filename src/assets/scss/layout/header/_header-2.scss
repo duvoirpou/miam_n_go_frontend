@@ -72,10 +72,29 @@
 						}
 					}
 				}
-				&.white> li > a{
+			}
+		}
+		.main-bar-wraper:not(.is-fixed){
+			.header-nav{
+				.nav.white> li > a{
 					color:#fff;
+					@include respond('tab-port'){
+						color:var(--title);
+					}
 					&.active,&:hover{
 						color:var(--primary);
+					}
+				}
+			}
+		}
+		&.home-header{
+			.main-bar-wraper:not(.is-fixed){
+				.header-nav{
+					.nav.white> li > a{
+						color:var(--title);
+						&.active,&:hover{
+							color:var(--primary);
+						}
 					}
 				}
 			}

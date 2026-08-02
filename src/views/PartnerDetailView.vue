@@ -5,7 +5,7 @@ import Header2 from "../Layouts/Header2.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 import CommonBanner from "../elements/CommonBanner.vue";
 import ProductCard from "../elements/ProductCard.vue";
-import bgimg from "@/assets/images/banner/bnr1.jpg";
+import bgimg from "@/assets/images/banner/51581-food-366875_1920.jpg";
 import { getPartner } from "@/services/partners";
 import { getCategories } from "@/services/categories";
 import { getProducts } from "@/services/products";

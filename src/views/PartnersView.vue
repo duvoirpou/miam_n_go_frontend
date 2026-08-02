@@ -4,7 +4,7 @@ import { RouterLink } from "vue-router";
 import Header2 from "../Layouts/Header2.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 import CommonBanner from "../elements/CommonBanner.vue";
-import bgimg from "@/assets/images/banner/bnr1.jpg";
+import bgimg from "@/assets/images/banner/51581-food-366875_1920.jpg";
 import placeholderImg from "@/assets/images/team/pic1.jpg";
 import { getPartners } from "@/services/partners";
 

@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import HeaderNav from "../components/HeaderNav.vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 const open = ref(false);
 const setHeader = ref(false);
 const addActive = ref(false);
 const cartStore = useCartStore();
+const route = useRoute();
 window.onscroll = () => {
   window.scrollY > 80 ? (setHeader.value = true) : (setHeader.value = false);
 };
@@ -14,7 +15,9 @@ window.onscroll = () => {
 
 <template>
   <header
-    class="site-header mo-left header header-transparent transparent-white style-2"
+    :class="`site-header mo-left header header-transparent transparent-white style-2 ${
+      route.path === '/' ? 'home-header' : ''
+    }`"
   >
     <!-- Main Header -->
     <div

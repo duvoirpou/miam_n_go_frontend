@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import CommonBanner from "../elements/CommonBanner.vue";
-import bgimg from "@/assets/images/banner/bnr1.jpg";
+import bgimg from "@/assets/images/banner/51581-food-366875_1920.jpg";
 import Header2 from "../Layouts/Header2.vue";
 import Footer2View from "../Layouts/Footer2View.vue";
 import { useAuthStore } from "@/stores/auth";

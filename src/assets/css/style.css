@@ -16356,10 +16356,21 @@ section {
     opacity: 1;
   }
 }
-.site-header.style-2 .header-nav .nav.white > li > a {
+.site-header.style-2 .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a {
   color: #fff;
 }
-.site-header.style-2 .header-nav .nav.white > li > a.active, .site-header.style-2 .header-nav .nav.white > li > a:hover {
+@media only screen and (max-width: 991px) {
+  .site-header.style-2 .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a {
+    color: var(--title);
+  }
+}
+.site-header.style-2 .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a.active, .site-header.style-2 .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a:hover {
+  color: var(--primary);
+}
+.site-header.style-2.home-header .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a {
+  color: var(--title);
+}
+.site-header.style-2.home-header .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a.active, .site-header.style-2.home-header .main-bar-wraper:not(.is-fixed) .header-nav .nav.white > li > a:hover {
   color: var(--primary);
 }
 .site-header.style-2 .top-bar {

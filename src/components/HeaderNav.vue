@@ -39,7 +39,7 @@ function mobileActiveMenu(ind) {
 </script>
 
 <template>
-  <ul class="nav navbar-nav navbar">
+  <ul class="nav navbar-nav navbar white">
     <li
       v-for="(item, ind) in menus"
       :class="`${item.menu === active ? 'active' : ''} nevList`"
